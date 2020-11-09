@@ -28,7 +28,7 @@ public class GroupSqlInit implements GroupCommand {
         try 
         {
             Class.forName("org.sqlite.JDBC");
-            Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/LinsterInfo.db");
+            Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/ListenerInfo.db");
 
             Statement sql = sqliteC.createStatement();
             sql.execute("drop table if exists G" + arg2.getId() + ";");

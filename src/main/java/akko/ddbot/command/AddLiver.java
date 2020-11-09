@@ -27,10 +27,11 @@ public class AddLiver implements GroupCommand {
         {
             try {
             Class.forName("org.sqlite.JDBC");
-            Connection sqliteGroup = DriverManager.getConnection("jdbc:sqlite:db/GroupInfo.db");
             Connection sqliteListner = DriverManager.getConnection("jdbc:sqlite:db/ListenerInfo.db");
             sqliteListner.createStatement().execute("create table V" + arr[1] + "(ID TEXT PRIMARY KEY NOT NULL) ;");
             sqliteListner.close();
+            Class.forName("org.sqlite.JDBC");
+            Connection sqliteGroup = DriverManager.getConnection("jdbc:sqlite:db/GroupInfo.db");
             sqliteGroup.createStatement().execute("insert into vLiver values (\'" + arr[1]+ "\',\'" + arr[2] + "\',0);");
             sqliteGroup.close();
             

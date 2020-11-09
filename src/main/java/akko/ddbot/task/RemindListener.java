@@ -14,7 +14,7 @@ public class RemindListener {
     void RemindListenerFun(String vID,String vNAME,String title,String url) {
         try {
             Class.forName("org.sqlite.JDBC");
-            Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/LinsterInfo.db");
+            Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/ListenerInfo.db");
             PreparedStatement sql = sqliteC.prepareStatement("select * from  V" + vID + ";");
             ResultSet res = sql.executeQuery();
             MessageBuilder mb = new MessageBuilder();

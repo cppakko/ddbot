@@ -26,7 +26,7 @@ public class AddListener implements GroupCommand {
         if (arr.length == 2) {
             try {
                 Class.forName("org.sqlite.JDBC");
-                Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/LinsterInfo.db");
+                Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/ListenerInfo.db");
                 sqliteC.prepareStatement("INSERT INTO V" + arr[1] + " VALUES(\'" + arg1.getId() + "\');").execute();
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();

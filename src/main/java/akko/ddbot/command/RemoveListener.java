@@ -25,7 +25,7 @@ public class RemoveListener implements GroupCommand {
         if (arr.length == 2) {
             try {
                 Class.forName("org.sqlite.JDBC");
-                Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/LinsterInfo.db");
+                Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/ListenerInfo.db");
                 sqliteC.prepareStatement("DELETE FROM V" + arr[1] + " WHERE ID = \'" + arg1.getId() + "\';").execute();
             } catch (ClassNotFoundException | SQLException e) {
                 System.out.println(e.getMessage());
