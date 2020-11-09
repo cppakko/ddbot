@@ -1,5 +1,8 @@
 package akko.ddbot.task;
 
+import akko.ddbot.sql.SQLFun;
+import akko.ddbot.sql.TwoTuple;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,16 +18,14 @@ public class LiverInit {
         
         try 
         {
-            Class.forName("org.sqlite.JDBC");
-            Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/GroupInfo.db");
-            ResultSet set = sqliteC.createStatement().executeQuery("select * from vLiver;");
-            
+            TwoTuple<ResultSet,Connection> tuple = new SQLFun().executeQuery("GroupInfo","SELECT * FROM vLiver;");
+            ResultSet set = tuple.resultSet;
             while (set.next()) {
                 liverList.add(set.getString("vID"));
             }
-            sqliteC.close();
+            tuple.connection.close();
         } 
-        catch (SQLException | ClassNotFoundException e) 
+        catch (SQLException e)
         {
             e.printStackTrace();
         }

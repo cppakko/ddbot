@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import akko.ddbot.sql.SQLFun;
 import akko.ddbot.task.LiverInit;
 import cc.moecraft.icq.command.CommandProperties;
 import cc.moecraft.icq.command.interfaces.GroupCommand;
@@ -25,23 +26,13 @@ public class AddLiver implements GroupCommand {
         String[] arr = arg0.getMessage().split(" ");
         if (arr.length == 3)
         {
-            try {
-            Class.forName("org.sqlite.JDBC");
-            Connection sqliteListner = DriverManager.getConnection("jdbc:sqlite:db/ListenerInfo.db");
-            sqliteListner.createStatement().execute("create table V" + arr[1] + "(ID TEXT PRIMARY KEY NOT NULL) ;");
-            sqliteListner.close();
-            Class.forName("org.sqlite.JDBC");
-            Connection sqliteGroup = DriverManager.getConnection("jdbc:sqlite:db/GroupInfo.db");
-            sqliteGroup.createStatement().execute("insert into vLiver values (\'" + arr[1]+ "\',\'" + arr[2] + "\',0);");
-            sqliteGroup.close();
-            
+            new SQLFun().execute("ListenerInfo","create table V" + arr[1] + "(ID TEXT PRIMARY KEY NOT NULL) ;");
+            new SQLFun().execute("GroupInfo","insert into vLiver values ('" + arr[1]+ "','" + arr[2] + "',0);");
             new LiverInit().init();
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-                return e.getMessage();
-            }
         }
-        else return "输入有误";
+        else {
+            return "输入有误";
+        }
         return "✔";
     }
     

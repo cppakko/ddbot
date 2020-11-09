@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import akko.ddbot.sql.SQLFun;
 import cc.moecraft.icq.command.CommandProperties;
 import cc.moecraft.icq.command.interfaces.GroupCommand;
 import cc.moecraft.icq.event.events.message.EventGroupMessage;
@@ -23,18 +24,12 @@ public class RemoveListener implements GroupCommand {
             ArrayList<String> arg4) {
         String[] arr = arg0.getMessage().split(" ");
         if (arr.length == 2) {
-            try {
-                Class.forName("org.sqlite.JDBC");
-                Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/ListenerInfo.db");
-                sqliteC.prepareStatement("DELETE FROM V" + arr[1] + " WHERE ID = \'" + arg1.getId() + "\';").execute();
-            } catch (ClassNotFoundException | SQLException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-            
+            new SQLFun().execute("ListenerInfo","DELETE FROM V" + arr[1] + " WHERE ID = '" + arg1.getId() + "';");
             return "操作成功 yattaze";
         }
-    else return "ERR 输入有误";
+    else {
+            return "ERR 输入有误";
+        }
     }
     
 }

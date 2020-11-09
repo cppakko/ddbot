@@ -7,23 +7,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import akko.ddbot.BotMainActivity;
+import akko.ddbot.sql.SQLFun;
+import akko.ddbot.sql.TwoTuple;
 import cc.moecraft.icq.sender.message.MessageBuilder;
 import cc.moecraft.icq.sender.message.components.ComponentAt;
 
 public class RemindListener {
-    void RemindListenerFun(String vID,String vNAME,String title,String url) {
+    void RemindListenerFun(String vID, String vNAME, String title, String url) {
         try {
-            Class.forName("org.sqlite.JDBC");
-            Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/ListenerInfo.db");
-            PreparedStatement sql = sqliteC.prepareStatement("select * from  V" + vID + ";");
-            ResultSet res = sql.executeQuery();
+            TwoTuple<ResultSet,Connection> tuple = new SQLFun().executeQuery("ListenerInfo","select * from  V" + vID + ";");
+            ResultSet res = tuple.resultSet;
             MessageBuilder mb = new MessageBuilder();
             int count = 0;
             mb.add(vNAME + " 开播力~").newLine()
-                .add("---------------").newLine()
-                .add(title).newLine()
-                .add(url).newLine()
-                .add("---------------").newLine();
+                    .add("---------------").newLine()
+                    .add(title).newLine()
+                    .add(url).newLine()
+                    .add("---------------").newLine();
             while (res.next())
             {
                 mb.add(new ComponentAt(Long.parseLong(res.getString("ID"))));
@@ -34,10 +34,11 @@ public class RemindListener {
                     mb.newLine();
                     count = 0;
                 }
-            } //955263823
+            }
+            tuple.connection.close();
             BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(955263823, mb.toString());
         } 
-        catch (ClassNotFoundException | SQLException e)
+        catch (SQLException e)
         {
             System.out.println(e.getMessage());
             e.printStackTrace();

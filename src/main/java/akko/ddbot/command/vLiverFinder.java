@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import akko.ddbot.sql.SQLFun;
+import akko.ddbot.sql.TwoTuple;
 import cc.moecraft.icq.command.CommandProperties;
 import cc.moecraft.icq.command.interfaces.GroupCommand;
 import cc.moecraft.icq.event.events.message.EventGroupMessage;
@@ -26,15 +28,15 @@ public class vLiverFinder implements GroupCommand {
         try 
         {
             Class.forName("org.sqlite.JDBC");
-            Connection sqliteC = DriverManager.getConnection("jdbc:sqlite:db/GroupInfo.db");
-            ResultSet set = sqliteC.prepareStatement("select * from vLiver;").executeQuery();
+            TwoTuple<ResultSet,Connection> tuple = new SQLFun().executeQuery("GroupInfo","SELECT * FROM vLiver;");
+            ResultSet set = tuple.resultSet;
             MessageBuilder mb = new MessageBuilder();
             mb.add("----------").newLine();
             mb.add("uid | Name").newLine();
             while (set.next()) {
                 mb.add(set.getString("vID") + "   " + set.getString("vNAME")).newLine();
             }
-            sqliteC.close();
+            tuple.connection.close();
             return mb.add("----------").toString();
         } 
         catch (ClassNotFoundException | SQLException e) {
