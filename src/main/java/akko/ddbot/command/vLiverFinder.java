@@ -34,6 +34,7 @@ public class vLiverFinder implements GroupCommand {
             while (set.next()) {
                 mb.add(set.getString("vID") + "   " + set.getString("vNAME")).newLine();
             }
+            sqliteC.close();
             return mb.add("----------").toString();
         } 
         catch (ClassNotFoundException | SQLException e) {

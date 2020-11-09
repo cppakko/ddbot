@@ -35,6 +35,7 @@ public class SqlRetrunMessageTest implements GroupCommand {
                 sb.append(res.getInt("vId") + " \n");
                 sb.append(res.getString("vNAME") + " \n");
             }
+            sqliteC.close();
             return sb.toString();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package akko.ddbot;
 
 import akko.ddbot.command.AddListener;
+import akko.ddbot.command.AddLiver;
 import akko.ddbot.command.GroupSqlInit;
 import akko.ddbot.command.HelpCommand;
 import akko.ddbot.command.RemoveListener;
@@ -8,6 +9,7 @@ import akko.ddbot.command.SqlRetrunMessageTest;
 import akko.ddbot.command.VersionTestCommand;
 import akko.ddbot.command.vLiverFinder;
 import akko.ddbot.task.LiveRoomTask;
+import akko.ddbot.task.LiverInit;
 import cc.moecraft.icq.PicqBotX;
 import cc.moecraft.icq.PicqConfig;
 
@@ -32,10 +34,12 @@ public class BotMainActivity {
             new HelpCommand(),
             new AddListener(),
             new RemoveListener(),
-            new vLiverFinder()
+            new vLiverFinder(),
+            new AddLiver()
         );
 
         mainBot.startBot();
+        new LiverInit().init();
         new LiveRoomTask().run();
     }
 }

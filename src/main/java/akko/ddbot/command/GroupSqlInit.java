@@ -39,7 +39,7 @@ public class GroupSqlInit implements GroupCommand {
             order.append(");");
             System.out.println(order.toString());
             sql.execute(order.toString());
-            
+            sqliteC.close();
             ReturnListData<RGroupMemberInfo> rd = arg0.getHttpApi().getGroupMemberList(arg2.getId());
             List<RGroupMemberInfo> list = rd.getData();
             for (RGroupMemberInfo rgmi : list)

@@ -19,7 +19,7 @@ public class RemindListener {
             ResultSet res = sql.executeQuery();
             MessageBuilder mb = new MessageBuilder();
             int count = 0;
-            mb.add(vNAME + "开播力~").newLine()
+            mb.add(vNAME + " 开播力~").newLine()
                 .add("---------------").newLine()
                 .add(title).newLine()
                 .add(url).newLine()
