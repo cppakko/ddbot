@@ -21,14 +21,15 @@ public class BotMainActivity {
 
         );
         mainBot.getCommandManager().registerCommands(
-            new VersionTestCommand(),
-            new GroupSqlInit(),
-            new HelpCommand(),
-            new AddListener(),
-            new RemoveListener(),
-            new vLiverFinder(),
-            new AddLiver(),
-            new IsAlive()
+                new VersionTestCommand(),
+                new GroupSqlInit(),
+                new HelpCommand(),
+                new AddListener(),
+                new RemoveListener(),
+                new vLiverFinder(),
+                new AddLiver(),
+                new IsAlive(),
+                new RebootCommand()
         );
 
         mainBot.startBot();

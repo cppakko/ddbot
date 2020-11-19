@@ -11,6 +11,7 @@ import akko.ddbot.sql.SQLFun;
 import akko.ddbot.sql.TwoTuple;
 import cc.moecraft.icq.sender.message.MessageBuilder;
 import cc.moecraft.icq.sender.message.components.ComponentAt;
+import cc.moecraft.icq.sender.returndata.ReturnStatus;
 
 public class RemindListener {
     void RemindListenerFun(String vID, String vNAME, String title, String url) {
@@ -36,7 +37,18 @@ public class RemindListener {
                 }
             }
             tuple.connection.close();
-            BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(955263823, mb.toString());
+            ReturnStatus rStatus = BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(955263823, mb.toString()).getStatus();
+            int retryCount = 0;
+            while (rStatus != ReturnStatus.ok && retryCount <= 5)
+            {
+                if (retryCount == 5)
+                {
+                    BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(955263823, "重试了五次也没发出来  饶了我吧(哭");
+                    break;
+                }
+                rStatus = BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(955263823, mb.toString()).getStatus();
+                retryCount++;
+            }
         } 
         catch (SQLException e)
         {
