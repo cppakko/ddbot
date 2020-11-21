@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 /**
  * bilibiliNetworkService
  */
-public interface BilibiliNetworkService {
+public interface BilibiliApiService {
     @GET("info")
     Call<ResponseBody> getDatCall(@Query("mid") String uid);
 }

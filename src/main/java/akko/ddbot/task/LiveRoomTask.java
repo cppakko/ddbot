@@ -3,14 +3,17 @@ package akko.ddbot.task;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
+import akko.ddbot.BotMainActivity;
+import akko.ddbot.data.BilibiliApi.BilibiliDataClass;
+import akko.ddbot.data.BilibiliApi.Data;
+import akko.ddbot.data.BilibiliApi.Live_room;
 import akko.ddbot.sql.SQLFun;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import akko.ddbot.network.BilibiliNetworkService;
+import akko.ddbot.network.BilibiliApiService;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -29,9 +32,15 @@ public class LiveRoomTask implements Runnable {
                 List<String> liverList = LiverInit.liverList;
                 Connection sqliteC = new SQLFun().connection("GroupInfo");
                 for (String vID : liverList) {
-                    Call<ResponseBody> call = retrofit.create(BilibiliNetworkService.class).getDatCall(vID);
-                    StringReader reader = new StringReader(call.execute().body().string());
-                    Data data = oMapper.readValue(reader, BilibiliDataClass.class).getData();
+                    Call<ResponseBody> call = retrofit.create(BilibiliApiService.class).getDatCall(vID);
+                    String body = null;
+                    ResponseBody rawBody = call.execute().body();
+                    if (rawBody != null) { body = rawBody.string(); }
+                    else {
+                        BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(12345,"b站网络出问题了(确信");
+                        continue;
+                    }
+                    Data data = oMapper.readValue(body, BilibiliDataClass.class).getData();
                     Live_room liveRoomData = data.getLive_room();
                     int statusRightNow = liveRoomData.getLiveStatus();
                     System.out.println(vID);
@@ -40,7 +49,7 @@ public class LiveRoomTask implements Runnable {
                     if (statusRightNow == 1 && statusindb == 0)
                     {
                         sqliteC.prepareStatement("UPDATE vLiver SET vSTATE = 1 WHERE vID = " + vID + ";").execute();
-                        new RemindListener().RemindListenerFun(vID,data.getName(),liveRoomData.getTitle(),liveRoomData.getUrl());;
+                        new RemindListener().RemindListenerFun(liveRoomData.getCover(),vID,data.getName(),liveRoomData.getTitle(),liveRoomData.getUrl());;
                     }
                     else if (statusRightNow == 0 && statusindb == 1)
                     {

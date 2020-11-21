@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class RebootCommand implements EverywhereCommand {
     @Override
     public String run(EventMessage eventMessage, User user, String s, ArrayList<String> arrayList) {
+        //TODO 重构
         try {
             Runtime.getRuntime().exec("sh reboot.sh");
         } catch (IOException e) {
