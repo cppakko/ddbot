@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import akko.ddbot.BotMainActivity;
+import akko.ddbot.InitCheck;
 import akko.ddbot.data.BilibiliApi.BilibiliDataClass;
 import akko.ddbot.data.BilibiliApi.Data;
 import akko.ddbot.data.BilibiliApi.Live_room;
@@ -37,7 +38,7 @@ public class LiveRoomTask implements Runnable {
                     ResponseBody rawBody = call.execute().body();
                     if (rawBody != null) { body = rawBody.string(); }
                     else {
-                        BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(12345,"b站网络出问题了(确信");
+                        BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(InitCheck.GROUP_ID,"b站网络出问题了(确信");
                         continue;
                     }
                     Data data = oMapper.readValue(body, BilibiliDataClass.class).getData();

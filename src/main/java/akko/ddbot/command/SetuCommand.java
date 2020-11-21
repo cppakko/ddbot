@@ -1,5 +1,6 @@
 package akko.ddbot.command;
 
+import akko.ddbot.InitCheck;
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass;
 import akko.ddbot.network.LoliconApiNetwork;
 import cc.moecraft.icq.command.CommandProperties;
@@ -21,7 +22,7 @@ public class SetuCommand implements GroupCommand {
     @Override
     public String groupMessage(EventGroupMessage eventGroupMessage, GroupUser groupUser, Group group, String s, ArrayList<String> arrayList) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://api.lolicon.app/").build();
-        Call<ResponseBody> call = retrofit.create(LoliconApiNetwork.class).get("677702765eb0ec8c4d4830","true");
+        Call<ResponseBody> call = retrofit.create(LoliconApiNetwork.class).get(InitCheck.LOLICON_APIKEY,"true");
         ObjectMapper om = new ObjectMapper();
         try {
             String body;

@@ -1,5 +1,6 @@
 package akko.ddbot.listener;
 
+import akko.ddbot.InitCheck;
 import akko.ddbot.data.MessageGetData.MesGetData;
 import akko.ddbot.data.OCRdata.Data;
 import akko.ddbot.data.OCRdata.OCRdata;
@@ -39,8 +40,7 @@ public class TranslateListener extends IcqListener {
                 {
                     final boolean isMinus = "-".equals(matcher.group(2));
                     final String message_id = (isMinus) ? "-" + matcher.group(3) : matcher.group(3);
-                    final String access_token = "";
-                    final String url = "http://0.0.0.0:5700/get_msg?message_id=" + message_id + "&access_token=" + access_token;
+                    final String url = "http://0.0.0.0:5700/get_msg?message_id=" + message_id + "&access_token=" + InitCheck.ACCESS_TOKEN;
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder().url(url).build();
                     final Call call = client.newCall(request);
@@ -52,7 +52,7 @@ public class TranslateListener extends IcqListener {
                         Matcher imgM = pattern.matcher(raw_imgInfo);
                         if (imgM.find())
                         {
-                            String ocr_url = "http://0.0.0.0:5700/.ocr_image?image=" + imgM.group(2) + "&access_token=" + access_token;
+                            String ocr_url = "http://0.0.0.0:" + InitCheck.POST_PORT + "/.ocr_image?image=" + imgM.group(2) + "&access_token=" + InitCheck.ACCESS_TOKEN;
                             Request request_ocr = new Request.Builder().url(ocr_url).build();
                             Call responseBodyCall = client.newCall(request_ocr);
                             String jsBody = responseBodyCall.execute().body().string();
@@ -70,9 +70,7 @@ public class TranslateListener extends IcqListener {
                             }
                             else
                             {
-                                final String APP_ID = "";
-                                final String SECURITY_KEY = "";
-                                TransApi transApi = new TransApi(APP_ID,SECURITY_KEY);
+                                TransApi transApi = new TransApi(InitCheck.BAIDU_APP_ID,InitCheck.BAIDU_SECURITY_KEY);
                                 for (Texts t : textsList)
                                 {
                                     String transJS = transApi.getTransResult(t.getText(),"auto","zh");

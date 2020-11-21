@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import akko.ddbot.BotMainActivity;
+import akko.ddbot.InitCheck;
 import akko.ddbot.sql.SQLFun;
 import akko.ddbot.sql.TwoTuple;
 import cc.moecraft.icq.sender.message.MessageBuilder;
@@ -39,16 +40,16 @@ public class RemindListener {
                 }
             }
             tuple.connection.close();
-            ReturnStatus rStatus = BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(123456, mb.toString()).getStatus();
+            ReturnStatus rStatus = BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(InitCheck.GROUP_ID, mb.toString()).getStatus();
             int retryCount = 0;
             while (rStatus != ReturnStatus.ok && retryCount <= 5)
             {
                 if (retryCount == 5)
                 {
-                    BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(123456, "重试了五次也没发出来  饶了我吧(哭");
+                    BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(InitCheck.GROUP_ID, "重试了五次也没发出来  饶了我吧(哭");
                     break;
                 }
-                rStatus = BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(123456, mb.toString()).getStatus();
+                rStatus = BotMainActivity.bot.getAccountManager().getNonAccountSpecifiedApi().sendGroupMsg(InitCheck.GROUP_ID, mb.toString()).getStatus();
                 retryCount++;
             }
         } 
