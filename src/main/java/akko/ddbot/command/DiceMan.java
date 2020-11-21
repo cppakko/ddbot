@@ -35,36 +35,43 @@ public class DiceMan implements GroupCommand {
     private String rollResult(String input) {
         Matcher matcher = rollPattern.matcher(input);
         if (matcher.matches()) {
-            List<String> diceList = new ArrayList<>();
-            MessageBuilder msgBuilder = new MessageBuilder();
-            Random random = new Random();
-            int val = 0;
-            int fixSum = 0;
-            String[] inputSegments = input.split("[+]");
-            for (String seg : inputSegments) {
-                String[] segsep = seg.split("[d]");
-                if (segsep.length == 1) {
-                    int fix = Integer.parseInt(seg);
-                    val += fix;
-                    fixSum += fix;
-                } else {
-                    int diceCount = Integer.parseInt(segsep[0]);
-                    int diceType = Integer.parseInt(segsep[1]);
-                    int diceVal = 0;
-                    for (int i = 0; i < diceCount; i++) {
-                        diceVal += random.nextInt(diceType) + 1;
+            try {
+                List<String> diceList = new ArrayList<>();
+                MessageBuilder msgBuilder = new MessageBuilder();
+                Random random = new Random();
+                int val = 0;
+                int fixSum = 0;
+                String[] inputSegments = input.split("[+]");
+                for (String seg : inputSegments) {
+                    String[] segsep = seg.split("[d]");
+                    if (segsep.length == 1) {
+                        int fix = Integer.parseInt(seg);
+                        val += fix;
+                        fixSum += fix;
+                    } else {
+                        int diceCount = Integer.parseInt(segsep[0]);
+                        int diceType = Integer.parseInt(segsep[1]);
+                        int diceVal = 0;
+                        for (int i = 0; i < diceCount; i++) {
+                            diceVal += random.nextInt(diceType) + 1;
+                        }
+                        val += diceVal;
+                        diceList.add("投掷" + diceCount + "枚" + diceType + "面骰，结果为:" + diceVal);
                     }
-                    val += diceVal;
-                    diceList.add("投掷" + diceCount + "枚" + diceType + "面骰，结果为:" + diceVal);
                 }
+                if(val <0){
+                    return "啊这，是不是数字太大了，骰子man溢出了";
+                }
+                msgBuilder.add("掷骰~").newLine();
+                for (String diceInfo : diceList) {
+                    msgBuilder.add(diceInfo).newLine();
+                }
+                msgBuilder.add("+" + fixSum + "补正").newLine();
+                msgBuilder.add("结果：" + val);
+                return msgBuilder.toString();
+            }catch (Exception e){
+                return "啊这，骰子man坏了："+e.getMessage();
             }
-            msgBuilder.add("掷骰~").newLine();
-            for (String diceInfo : diceList) {
-                msgBuilder.add(diceInfo).newLine();
-            }
-            msgBuilder.add("+" + fixSum + "补正").newLine();
-            msgBuilder.add("结果：" + val);
-            return msgBuilder.toString();
         } else {
             return "啊这，掷筛格式错误，输入!dice help获取帮助";
         }
