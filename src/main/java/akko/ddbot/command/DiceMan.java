@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DiceMan implements GroupCommand {
-    private static final String patternStr = "^([0-9]+)d([0-9]+)(?:[+](?:(?:([0-9]+)d([0-9]+))|([0-9]+)))+$";
+    private static final String patternStr = "^([0-9]+)d([0-9]+)(?:[+](?:(?:([0-9]+)d([0-9]+))|([0-9]+)))*$";
     private static final Pattern rollPattern = Pattern.compile(patternStr);
 
     @Override
@@ -73,8 +73,11 @@ public class DiceMan implements GroupCommand {
     private String helpInfo() {
         return new MessageBuilder()
             .add("------DiceMan------").newLine()
-            .add("关于掷筛命令").newLine()
-            .add("建议直接问群友").newLine()
+            .add("dice roll {param}").newLine()
+            .add("(暂时只有一个这一个roll子命令）").newLine()
+            .add("param格式大致像1d6+2d20+5这样").newLine()
+            .add("<a>d<b>表示掷a个b面骰，+[数字]表示补正").newLine()
+            .add("具体细节建议直接问群友").newLine()
             .add("-------------------").toString();
     }
 
