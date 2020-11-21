@@ -31,7 +31,8 @@ public class BotMainActivity {
                 new AddLiver(),
                 new IsAlive(),
                 new RebootCommand(),
-                new SetuCommand()
+                new SetuCommand(),
+                new DiceMan()
         );
 
         mainBot.startBot();
