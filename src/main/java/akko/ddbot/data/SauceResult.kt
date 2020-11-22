@@ -8,4 +8,6 @@ data class SauceResult (
         val authorName:String,
         val authorUrl:String,
         val similarity:Double,
+        val engName:String,
+        val jpName:String,
 )

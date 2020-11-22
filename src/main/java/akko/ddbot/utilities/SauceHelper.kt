@@ -21,6 +21,10 @@ object SauceHelper {
             val authorUrl = rsltNode[idx]["data"]["author_url"]?.asText() ?: ""
             val similarityText = rsltNode[idx]["header"]["similarity"]?.asText() ?: "0"
             val similarity = similarityText.toDouble()
+
+            val engName = rsltNode[idx]["data"]["eng_name"]?.asText() ?: ""
+            val jpName = rsltNode[idx]["data"]["jp_name"]?.asText() ?: ""
+
             arr.add(SauceResult(
                     title,
                     thumbnail,
@@ -28,7 +32,9 @@ object SauceHelper {
                     extUrl,
                     authorName,
                     authorUrl,
-                    similarity
+                    similarity,
+                    engName,
+                    jpName
             ))
         }
         return arr
