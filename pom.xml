@@ -28,6 +28,13 @@
 
     <dependencies>
 
+        <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core -->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+
         <dependency>
             <groupId>com.github.hydevelop</groupId>
             <artifactId>PicqBotX</artifactId>

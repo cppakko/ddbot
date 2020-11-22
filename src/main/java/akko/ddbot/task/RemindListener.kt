@@ -19,15 +19,19 @@ class RemindListener {
             val res: ResultSet = tuple!!.resultSet
             val mb = MessageBuilder()
             var count = 0
-            mb.add("$vNAME 开播力~").newLine()
-                    .add("---------------").newLine()
-                    .add(ComponentImage(cover))
-                    .add(title).newLine()
-                    .add(url).newLine()
-                    .add("---------------").newLine()
+            mb.run {
+                add("$vNAME 开播力~").newLine()
+                add("---------------").newLine()
+                add(ComponentImage(cover))
+                add(title).newLine()
+                add(url).newLine()
+                add("---------------").newLine()
+            }
             while (res.next()) {
-                mb.add(ComponentAt(res.getString("ID").toLong()))
-                mb.add(" ")
+                mb.run {
+                    add(ComponentAt(res.getString("ID").toLong()))
+                    add(" ")
+                }
                 count++
                 if (count == 3) {
                     mb.newLine()
