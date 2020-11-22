@@ -7,4 +7,5 @@ data class SauceResult (
         val extUrls:List<String>,
         val authorName:String,
         val authorUrl:String,
+        val similarity:Double,
 )
