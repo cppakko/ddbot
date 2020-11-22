@@ -9,6 +9,9 @@ import cc.moecraft.icq.user.GroupUser
 import java.util.*
 import java.util.regex.Pattern
 
+object RandomProvider{
+    val ranGen = Random()
+}
 class DiceMan : GroupCommand {
     override fun groupMessage(eventGroupMessage: EventGroupMessage, groupUser: GroupUser, group: Group, s: String, arrayList: ArrayList<String>): String {
         val input = eventGroupMessage.getMessage().trim { it <= ' ' }
@@ -28,36 +31,38 @@ class DiceMan : GroupCommand {
             try {
                 val diceList: MutableList<String> = ArrayList()
                 val msgBuilder = MessageBuilder()
-                val random = Random()
-                var `val` = 0
+                val random =RandomProvider.ranGen
+                var value = 0
                 var fixSum = 0
                 val inputSegments = input.split("[+]".toRegex()).toTypedArray()
                 for (seg in inputSegments) {
-                    val segsep = seg.split("[d]".toRegex()).toTypedArray()
-                    if (segsep.size == 1) {
+                    val segSep = seg.split("[d]".toRegex()).toTypedArray()
+                    if (segSep.size == 1) {
                         val fix = seg.toInt()
-                        `val` += fix
+                        value += fix
                         fixSum += fix
                     } else {
-                        val diceCount = segsep[0].toInt()
-                        val diceType = segsep[1].toInt()
+                        val diceCount = segSep[0].toInt()
+                        val diceType = segSep[1].toInt()
                         var diceVal = 0
                         for (i in 0 until diceCount) {
                             diceVal += random.nextInt(diceType) + 1
                         }
-                        `val` += diceVal
+                        value += diceVal
                         diceList.add("投掷" + diceCount + "枚" + diceType + "面骰，结果为:" + diceVal)
                     }
                 }
-                if (`val` < 0) {
+                if (value < 0) {
                     return "啊这，是不是数字太大了，骰子man溢出了"
                 }
                 msgBuilder.add("掷骰~").newLine()
                 for (diceInfo in diceList) {
                     msgBuilder.add(diceInfo).newLine()
                 }
-                msgBuilder.add("+" + fixSum + "补正").newLine()
-                msgBuilder.add("结果：$`val`")
+                if(fixSum >0){
+                    msgBuilder.add("+" + fixSum + "补正").newLine()
+                }
+                msgBuilder.add("结果：$value")
                 msgBuilder.toString()
             } catch (e: Exception) {
                 "啊这，骰子man坏了：" + e.message
@@ -70,6 +75,7 @@ class DiceMan : GroupCommand {
     private fun helpInfo(): String {
         return MessageBuilder()
                 .add("------DiceMan------").newLine()
+                .add("ver 2020.11.22_01").newLine()
                 .add("dice roll {param}").newLine()
                 .add("(暂时只有一个这一个roll子命令）").newLine()
                 .add("param格式大致像1d6+2d20+5这样").newLine()
