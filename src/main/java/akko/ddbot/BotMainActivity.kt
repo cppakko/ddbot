@@ -1,6 +1,7 @@
 package akko.ddbot
 
 import akko.ddbot.command.*
+import akko.ddbot.listener.ImgSeachListener
 import akko.ddbot.listener.TranslateListener
 import akko.ddbot.task.LiveRoomTask
 import akko.ddbot.task.LiverInit
@@ -24,7 +25,8 @@ class BotMainActivity {
             mainBot.enableCommandManager("!", "bot -")
 
             mainBot.eventManager.registerListeners(
-                    TranslateListener()
+                    TranslateListener(),
+                    ImgSeachListener()
             )
             mainBot.commandManager.registerCommands(
                     AddListener(),

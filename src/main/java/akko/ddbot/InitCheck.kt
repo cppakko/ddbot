@@ -15,6 +15,7 @@ object InitCheck {
     var BAIDU_APP_ID: String? = null
     var BAIDU_SECURITY_KEY: String? = null
     var LOLICON_APIKEY: String? = null
+    var SAUCENAO_API_KEY: String? = null
 
     fun installCheck() {
         val isInstalled = File("isInstalled")
@@ -47,6 +48,7 @@ object InitCheck {
                 BAIDU_APP_ID = botConfigData.baiduAppId
                 BAIDU_SECURITY_KEY = botConfigData.baiduSecurityKey
                 LOLICON_APIKEY = botConfigData.loliconApikey
+                SAUCENAO_API_KEY = botConfigData.saucenaoApiKey
             } catch (e: IOException) {
                 e.printStackTrace()
             }

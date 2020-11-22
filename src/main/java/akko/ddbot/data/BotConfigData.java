@@ -25,6 +25,10 @@ public class BotConfigData {
     private String baiduSecurityKey;
     @JsonProperty("lolicon_apikey")
     private String loliconApikey;
+    @JsonProperty("SauceNAO_API_KEY")
+    private String saucenaoApiKey;
+    public void setSaucenaoApiKey(String saucenaoApiKey) { this.saucenaoApiKey = saucenaoApiKey; }
+    public String getSaucenaoApiKey() { return saucenaoApiKey; }
     public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
