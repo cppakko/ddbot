@@ -36,7 +36,7 @@ class TranslateListener : IcqListener() {
                     val om = ObjectMapper()
                     try {
                         val body = call.execute().body()!!.string()
-                        val raw_imgInfo = om.readValue(body, MesGetData::class.java).data.message
+                        val raw_imgInfo = om.readValue(body, MesGetData::class.java).data!!.message
                         pattern = Pattern.compile("(file=)([0-9a-z.]*)")
                         val imgM = pattern.matcher(raw_imgInfo)
                         if (imgM.find()) {
@@ -44,9 +44,9 @@ class TranslateListener : IcqListener() {
                             val request_ocr = Request.Builder().url(ocr_url).build()
                             val responseBodyCall = client.newCall(request_ocr)
                             val jsBody = responseBodyCall.execute().body()!!.string()
-                            val data = om.readValue(jsBody, OCRdata::class.java).data
+                            val data = om.readValue(jsBody, OCRdata::class.java).data!!
                             val language = data.language
-                            val textsList = data.texts
+                            val textsList = data.texts!!
                             val mb = MessageBuilder()
                             if ("zh" == language) {
                                 for (t in textsList) {
@@ -57,7 +57,7 @@ class TranslateListener : IcqListener() {
                                 val transApi = TransApi(InitCheck.BAIDU_APP_ID, InitCheck.BAIDU_SECURITY_KEY)
                                 for (t in textsList) {
                                     val transJS = transApi.getTransResult(t.text, "auto", "zh")
-                                    val unicode = om.readValue(transJS, TranslateData::class.java).transResult[0].dst
+                                    val unicode = om.readValue(transJS, TranslateData::class.java).transResult!![0].dst
                                     mb.add(unicode)
                                     mb.newLine()
                                 }

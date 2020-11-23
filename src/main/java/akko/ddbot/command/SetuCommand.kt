@@ -1,5 +1,6 @@
 package akko.ddbot.command
 
+import akko.ddbot.BotMainActivity
 import akko.ddbot.InitCheck
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
 import akko.ddbot.network.LoliconApiNetwork
@@ -8,6 +9,8 @@ import cc.moecraft.icq.command.interfaces.GroupCommand
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.sender.message.MessageBuilder
 import cc.moecraft.icq.sender.message.components.ComponentImage
+import cc.moecraft.icq.sender.message.components.ComponentImageBase64
+import cc.moecraft.icq.sender.returndata.ReturnStatus
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -22,7 +25,7 @@ class SetuCommand : GroupCommand {
         val retrofit = Retrofit.Builder().baseUrl("https://api.lolicon.app/").build()
         val call: Call<ResponseBody?>? = retrofit.create(LoliconApiNetwork::class.java)[InitCheck.LOLICON_APIKEY, "true"]
         val om = ObjectMapper()
-        return try {
+        try {
             val body: String
             val responsebody = call?.execute()?.body()
             body = if (responsebody != null) {
@@ -31,12 +34,18 @@ class SetuCommand : GroupCommand {
                 return "Lolicon网络有点问题(确信"
             }
             println(body)
-            val url = om.readValue(body, LoliconApiDataClass::class.java).data[0].url
-            MessageBuilder().add(ComponentImage(url)).toString()
+            val url = om.readValue(body, LoliconApiDataClass::class.java).data!![0].url
+            val msg = MessageBuilder().add(ComponentImage(url)).toString()
+            val res = BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(InitCheck.GROUP_ID.toLong(),msg)
+            if (res.status != ReturnStatus.ok)
+            {
+                return MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString()
+            }
         } catch (e: IOException) {
             e.printStackTrace()
-            e.message!!
+            return e.message!!
         }
+        return ""
     }
 
     override fun properties(): CommandProperties {
