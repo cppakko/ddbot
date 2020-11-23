@@ -54,9 +54,9 @@ class TranslateListener : IcqListener() {
                                     mb.newLine()
                                 }
                             } else {
-                                val transApi = TransApi(InitCheck.BAIDU_APP_ID, InitCheck.BAIDU_SECURITY_KEY)
+                                val transApi = TransApi(InitCheck.BAIDU_APP_ID!!, InitCheck.BAIDU_SECURITY_KEY!!)
                                 for (t in textsList) {
-                                    val transJS = transApi.getTransResult(t.text, "auto", "zh")
+                                    val transJS = transApi.getTransResult(t.text!!, "auto", "zh")
                                     val unicode = om.readValue(transJS, TranslateData::class.java).transResult!![0].dst
                                     mb.add(unicode)
                                     mb.newLine()

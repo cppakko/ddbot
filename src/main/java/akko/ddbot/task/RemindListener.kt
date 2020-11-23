@@ -4,6 +4,7 @@ import akko.ddbot.BotMainActivity
 import akko.ddbot.InitCheck
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.sql.TwoTuple
+import akko.ddbot.utilities.GroupMsg
 import cc.moecraft.icq.sender.message.MessageBuilder
 import cc.moecraft.icq.sender.message.components.ComponentAt
 import cc.moecraft.icq.sender.message.components.ComponentImage
@@ -40,14 +41,15 @@ class RemindListener {
             }
             tuple.connection.close()
             val groupId = InitCheck.GROUP_ID.toLong()
-            var rStatus = BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(groupId, mb.toString()).status
+            var rStatus = GroupMsg(groupId, mb.toString())
             var retryCount = 0
             while (rStatus != ReturnStatus.ok && retryCount <= 5) {
                 if (retryCount == 5) {
-                    BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(groupId, "重试了五次也没发出来  饶了我吧(哭")
+                    GroupMsg(groupId, "重试了五次也没发出来  饶了我吧(哭")
+                    GroupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
                     break
                 }
-                rStatus = BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(groupId, mb.toString()).status
+                rStatus = GroupMsg(groupId, mb.toString())
                 retryCount++
             }
         } catch (e: SQLException) {

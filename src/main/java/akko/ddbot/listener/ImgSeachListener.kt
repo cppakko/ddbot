@@ -5,6 +5,7 @@ import akko.ddbot.InitCheck
 import akko.ddbot.data.CQGetImgData.CQGetImgData
 import akko.ddbot.data.MessageGetData.MesGetData
 import akko.ddbot.network.SaucenaoApiService
+import akko.ddbot.utilities.GroupMsg
 import akko.ddbot.utilities.SauceHelper
 import cc.moecraft.icq.event.EventHandler
 import cc.moecraft.icq.event.IcqListener
@@ -67,7 +68,7 @@ class ImgSeachListener : IcqListener() {
                                         add("你这图怎么回事啊")
                                     }
                                 }
-                                BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(event.groupId,builder.toString())
+                                GroupMsg(event.groupId,builder.toString())
                             }
                         } catch (e: IOException) {
                             event.respond(e.message)
