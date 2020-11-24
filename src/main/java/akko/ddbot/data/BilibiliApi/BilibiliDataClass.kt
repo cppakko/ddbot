@@ -33,46 +33,44 @@ data class Data(
 )
 
 data class LiveRoom(
-    val broadcast_type: Int,
-    val cover: String,
-    val liveStatus: Int,
-    val online: Int,
-    val roomStatus: Int,
-    val roomid: Int,
-    val roundStatus: Int,
-    val title: String,
-    val url: String
+        val broadcast_type: Int,
+        val cover: String,
+        val liveStatus: Int,
+        val online: Int,
+        val roomStatus: Int,
+        val roomid: Int,
+        val roundStatus: Int,
+        val title: String,
+        val url: String
 )
 
 data class Nameplate(
-    val condition: String,
-    val image: String,
-    val image_small: String,
-    val level: String,
-    val name: String,
-    val nid: Int
+        val condition: String,
+        val image: String,
+        val image_small: String,
+        val level: String,
+        val name: String,
+        val nid: Int
 )
 
 data class Official(
-    val desc: String,
-    val role: Int,
-    val title: String,
-    val type: Int
+        val desc: String,
+        val role: Int,
+        val title: String,
+        val type: Int
 )
 
 data class Pendant(
-    val expire: Int,
-    val image: String,
-    val image_enhance: String,
-    val name: String,
-    val pid: Int
+        val expire: Int,
+        val image: String,
+        val image_enhance: String,
+        val name: String,
+        val pid: Int
 )
 
-class SysNotice(
-)
+class SysNotice
 
-class Theme(
-)
+class Theme
 
 data class Vip(
         val avatar_subscript: Int,
@@ -84,7 +82,7 @@ data class Vip(
 )
 
 data class Label(
-    val label_theme: String,
-    val path: String,
-    val text: String
+        val label_theme: String,
+        val path: String,
+        val text: String
 )

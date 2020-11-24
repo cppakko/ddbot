@@ -11,7 +11,7 @@ import java.io.IOException
 import java.sql.Connection
 import java.sql.SQLException
 
-val LiveRoomTask = Thread() {
+val LiveRoomTask = Thread {
     val oMapper = jacksonObjectMapper()
     val retrofit = Retrofit.Builder().baseUrl("https://api.bilibili.com/x/space/acc/").build()
     try {
