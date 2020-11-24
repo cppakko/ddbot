@@ -1,9 +1,9 @@
 package akko.ddbot.command
 
-import akko.ddbot.BotMainActivity
 import akko.ddbot.InitCheck
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
 import akko.ddbot.network.LoliconApiNetwork
+import akko.ddbot.utilities.GlobalObject
 import akko.ddbot.utilities.GroupMsg
 import cc.moecraft.icq.command.CommandProperties
 import cc.moecraft.icq.command.interfaces.GroupCommand
@@ -13,7 +13,6 @@ import cc.moecraft.icq.sender.message.components.ComponentImage
 import cc.moecraft.icq.sender.returndata.ReturnStatus
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
-import com.fasterxml.jackson.databind.ObjectMapper
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -28,7 +27,6 @@ class SetuCommand : GroupCommand {
     override fun groupMessage(eventGroupMessage: EventGroupMessage, groupUser: GroupUser, group: Group, s: String, arrayList: ArrayList<String>): String {
         val retrofit = Retrofit.Builder().baseUrl("https://api.lolicon.app/").build()
         val call: Call<ResponseBody?>? = retrofit.create(LoliconApiNetwork::class.java)[InitCheck.LOLICON_APIKEY, "true"]
-        val om = ObjectMapper()
         try {
             val body: String
             val responsebody = call?.execute()?.body()
@@ -38,7 +36,7 @@ class SetuCommand : GroupCommand {
                 return "Lolicon网络有点问题(确信"
             }
             println(body)
-            val url = om.readValue(body, LoliconApiDataClass::class.java).data!![0].url
+            val url = GlobalObject.objectMapper.readValue(body, LoliconApiDataClass::class.java).data!![0].url
             if (url != null) { getTask(url) } else { return "Lolicon网络有点问题(确信" }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -72,7 +70,7 @@ private fun getTask(url: String)
                 val inputStream = response.body()!!.byteStream()
                 val buffer = ByteArray(1024 * 4)
                 val fos: FileOutputStream?
-                var len = 0
+                var len: Int
                 val off = 0
                 try {
                     fos = FileOutputStream(imgFile)

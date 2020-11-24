@@ -6,8 +6,7 @@ import kotlin.math.min
 
 object SauceHelper {
     fun extract(input:String,limit:Int = 5) :List<SauceResult>{
-        val mapper = ObjectMapper()
-        val json = mapper.readTree(input)
+        val json = GlobalObject.objectMapper.readTree(input)
         val rsltNode = json["results"]
         val len = rsltNode.size()
         val finallimit = min(len, limit)

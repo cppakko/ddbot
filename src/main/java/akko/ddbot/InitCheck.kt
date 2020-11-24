@@ -1,6 +1,7 @@
 package akko.ddbot
 
 import akko.ddbot.data.BotConfigData
+import akko.ddbot.utilities.GlobalObject
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.File
 import java.io.IOException
@@ -20,7 +21,6 @@ object InitCheck {
     fun installCheck() {
         val isInstalled = File("isInstalled")
         val botXconfig = File("botXconfig.json")
-        val om = ObjectMapper()
         if (!isInstalled.exists()) {
             try {
                 isInstalled.createNewFile()
@@ -31,7 +31,7 @@ object InitCheck {
                 botConfigData.baiduAppId = ""
                 botConfigData.baiduSecurityKey = ""
                 botConfigData.loliconApikey = ""
-                om.writeValue(botXconfig, botConfigData)
+                GlobalObject.objectMapper.writeValue(botXconfig, botConfigData)
                 println("请对botXconfig.json完成修改后重启 别填错了别填错了别填错了")
                 exitProcess(0)
             } catch (e: IOException) {
@@ -39,7 +39,7 @@ object InitCheck {
             }
         } else {
             try {
-                val botConfigData = om.readValue(botXconfig, BotConfigData::class.java)
+                val botConfigData = GlobalObject.objectMapper.readValue(botXconfig, BotConfigData::class.java)
                 GROUP_ID = botConfigData.groupId
                 ACCESS_TOKEN = botConfigData.accessToken
                 SECRET = botConfigData.secret
