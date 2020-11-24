@@ -36,7 +36,7 @@ class ImgSeachListener : IcqListener() {
                     if ("id=" == matcher.group(1)) {
                         val isMinus = "-" == matcher.group(2)
                         val messageId = if (isMinus) "-" + matcher.group(3) else matcher.group(3)
-                        val url = "http://0.0.0.0:5700/get_msg?message_id=" + messageId + "&access_token=" + InitCheck.ACCESS_TOKEN
+                        val url = "http://0.0.0.0:" + InitCheck.POST_PORT + "/get_msg?message_id=" + messageId + "&access_token=" + InitCheck.ACCESS_TOKEN
                         val client = OkHttpClient()
                         val request = Request.Builder().url(url).build()
                         val call = client.newCall(request)

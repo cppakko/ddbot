@@ -1,16 +1,16 @@
 package akko.ddbot.listener
 
 import akko.ddbot.InitCheck
-import akko.ddbot.data.MessageGetData.MesGetData
 import akko.ddbot.data.OCRdata.OCRdata
 import akko.ddbot.data.TranslateData.TranslateData
-import akko.ddbot.task.translate.TransApi
+import akko.ddbot.utilities.translate.TransApi
 import akko.ddbot.utilities.GlobalObject
+import akko.ddbot.utilities.getMsg
+import akko.ddbot.utilities.ocrFun
 import cc.moecraft.icq.event.EventHandler
 import cc.moecraft.icq.event.IcqListener
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.sender.message.MessageBuilder
-import com.fasterxml.jackson.databind.ObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
@@ -29,22 +29,12 @@ class TranslateListener : IcqListener() {
             if (matcher.find()) {
                 if ("id=" == matcher.group(1)) {
                     val isMinus = "-" == matcher.group(2)
-                    val message_id = if (isMinus) "-" + matcher.group(3) else matcher.group(3)
-                    val url = "http://0.0.0.0:5700/get_msg?message_id=" + message_id + "&access_token=" + InitCheck.ACCESS_TOKEN
-                    val client = OkHttpClient()
-                    val request = Request.Builder().url(url).build()
-                    val call = client.newCall(request)
+                    val messageId = if (isMinus) "-" + matcher.group(3) else matcher.group(3)
                     try {
-                        val body = call.execute().body()!!.string()
-                        val raw_imgInfo = GlobalObject.objectMapper.readValue(body, MesGetData::class.java).data!!.message
                         pattern = Pattern.compile("(file=)([0-9a-z.]*)")
-                        val imgM = pattern.matcher(raw_imgInfo)
+                        val imgM = pattern.matcher(getMsg(messageId))
                         if (imgM.find()) {
-                            val ocr_url = "http://0.0.0.0:" + InitCheck.POST_PORT.toString() + "/.ocr_image?image=" + imgM.group(2).toString() + "&access_token=" + InitCheck.ACCESS_TOKEN
-                            val request_ocr = Request.Builder().url(ocr_url).build()
-                            val responseBodyCall = client.newCall(request_ocr)
-                            val jsBody = responseBodyCall.execute().body()!!.string()
-                            val data = GlobalObject.objectMapper.readValue(jsBody, OCRdata::class.java).data!!
+                            val data = ocrFun(imgM.group(2).toString()).data!!
                             val language = data.language
                             val textsList = data.texts!!
                             val mb = MessageBuilder()

@@ -1,8 +1,7 @@
-package akko.ddbot.task.translate
+package akko.ddbot.utilities.translate
 
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
-import akko.ddbot.task.translate.HttpGet
 import java.io.*
 import javax.net.ssl.HttpsURLConnection
 import java.lang.StringBuilder

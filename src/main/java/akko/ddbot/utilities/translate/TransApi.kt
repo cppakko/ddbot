@@ -1,4 +1,4 @@
-package akko.ddbot.task.translate
+package akko.ddbot.utilities.translate
 
 import java.util.*
 import kotlin.collections.Map

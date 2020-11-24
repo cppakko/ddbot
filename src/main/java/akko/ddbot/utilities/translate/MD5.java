@@ -1,4 +1,4 @@
-package akko.ddbot.task.translate;
+package akko.ddbot.utilities.translate;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
