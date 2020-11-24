@@ -59,7 +59,7 @@ class DiceMan : GroupCommand {
                         value += diceVal
                         val sb = StringBuilder()
                         val newline = System.lineSeparator()
-                        if (diceCount == 0) {
+                        if (diceCount == 1) {
                             sb.append("投掷" + diceCount + "枚" + diceType + "面骰，结果为：" + diceVal)
                         } else {
                             sb.append("投掷" + diceCount + "枚" + diceType + "面骰，结果为：").append(newline)
@@ -93,7 +93,7 @@ class DiceMan : GroupCommand {
     private fun helpInfo(): String {
         return MessageBuilder()
                 .add("------DiceMan------").newLine()
-                .add("ver 2020.11.24_01").newLine()
+                .add("ver 2020.11.24_02").newLine()
                 .add("dice roll {param}").newLine()
                 .add("d roll {param}").newLine()
                 .add("(暂时只有一个这一个roll子命令）").newLine()
