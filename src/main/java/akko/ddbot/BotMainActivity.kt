@@ -36,7 +36,8 @@ class BotMainActivity {
                     isAlive(),
                     RemoveListener(),
                     SetuCommand(),
-                    vLiverFinder()
+                    vLiverFinder(),
+                    TestCommand()
             )
             bot = mainBot
             LiverInit.init()

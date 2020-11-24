@@ -5,14 +5,14 @@ import akko.ddbot.InitCheck
 import akko.ddbot.data.BilibiliApi.BilibiliDataClass
 import akko.ddbot.network.BilibiliApiService
 import akko.ddbot.sql.SQLFun
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.*
 import retrofit2.Retrofit
 import java.io.IOException
 import java.sql.Connection
 import java.sql.SQLException
 
 val LiveRoomTask = Thread() {
-    val oMapper = ObjectMapper()
+    val oMapper = jacksonObjectMapper()
     val retrofit = Retrofit.Builder().baseUrl("https://api.bilibili.com/x/space/acc/").build()
     try {
         while (true) {
@@ -28,7 +28,7 @@ val LiveRoomTask = Thread() {
                     BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(InitCheck.GROUP_ID.toLong(), "b站网络出问题了(确信")
                     continue
                 }
-                val data = oMapper.readValue(body, BilibiliDataClass::class.java).data
+                val data = oMapper.readValue<BilibiliDataClass>(body).data
                 val liveRoomData = data.live_room
                 val statusRightNow = liveRoomData.liveStatus
                 println(vID)
