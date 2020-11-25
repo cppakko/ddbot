@@ -1,6 +1,7 @@
 package akko.ddbot
 
 import akko.ddbot.data.BotConfigData
+import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.File
@@ -17,6 +18,7 @@ object InitCheck {
     var BAIDU_SECURITY_KEY: String? = null
     var LOLICON_APIKEY: String? = null
     var SAUCENAO_API_KEY: String? = null
+    var MAX_PICTURE_ID: Long = 0
 
     fun installCheck() {
         val isInstalled = File("isInstalled")
@@ -49,6 +51,8 @@ object InitCheck {
                 BAIDU_SECURITY_KEY = botConfigData.baiduSecurityKey
                 LOLICON_APIKEY = botConfigData.loliconApikey
                 SAUCENAO_API_KEY = botConfigData.saucenaoApiKey
+
+                MAX_PICTURE_ID = SQLFun().executeQuery("ImgCollect","select max(picture_id) from ImgInfo;")!!.resultSet.getLong(1)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

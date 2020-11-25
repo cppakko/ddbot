@@ -55,25 +55,31 @@ class ImgSeachListener : IcqListener() {
                                         val body = response.body()!!.string()
                                         val imgQqUrl = GlobalObject.objectMapper.readValue(body, CQGetImgData::class.java).data!!.url
                                         val retrofit = Retrofit.Builder().baseUrl("https://saucenao.com/").build()
-                                        val searchBody: String = retrofit.create(SaucenaoApiService::class.java)[999, 2, 1, 1, imgQqUrl, InitCheck.SAUCENAO_API_KEY]!!.execute().body()!!.string()
-                                        val result = SauceHelper.extract(searchBody,1)[0]
-                                        val builder = MessageBuilder()
-                                        builder.run {
-                                            add(ComponentImage(result.thumbnail)).newLine()
-                                            for (str: String in result.extUrls)
-                                            {
-                                                add(str).newLine()
+                                        retrofit.create(SaucenaoApiService::class.java)[999, 2, 1, 1, imgQqUrl, InitCheck.SAUCENAO_API_KEY]?.enqueue(object: retrofit2.Callback<ResponseBody?> {
+                                            override fun onResponse(call: retrofit2.Call<ResponseBody?>, response: retrofit2.Response<ResponseBody?>) {
+                                                val searchBody = response.body()!!.string()
+                                                val result = SauceHelper.extract(searchBody,1)[0]
+                                                val builder = MessageBuilder()
+                                                builder.run {
+                                                    add(ComponentImage(result.thumbnail)).newLine()
+                                                    for (str: String in result.extUrls) {
+                                                        add(str).newLine()
+                                                    }
+                                                    add("相似度 -> " + result.similarity)
+                                                }
+                                                if (result.similarity < 50) {
+                                                    builder.run {
+                                                        newLine()
+                                                        add("你这图怎么回事啊")
+                                                    }
+                                                }
+                                                GroupMsg(event.groupId,builder.toString())
                                             }
-                                            add("相似度 -> " + result.similarity)
-                                        }
-                                        if (result.similarity < 50)
-                                        {
-                                            builder.run {
-                                                newLine()
-                                                add("你这图怎么回事啊")
+
+                                            override fun onFailure(call: retrofit2.Call<ResponseBody?>, t: Throwable) {
+                                                GroupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
                                             }
-                                        }
-                                        GroupMsg(event.groupId,builder.toString())
+                                        })
                                     }
                                 })
                             }

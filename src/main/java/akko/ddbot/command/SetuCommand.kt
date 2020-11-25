@@ -3,8 +3,11 @@ package akko.ddbot.command
 import akko.ddbot.InitCheck
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
 import akko.ddbot.network.LoliconApiNetwork
+import akko.ddbot.sql.SQLFun
+import akko.ddbot.task.SetuList
 import akko.ddbot.utilities.GlobalObject
 import akko.ddbot.utilities.GroupMsg
+import akko.ddbot.utilities.RawGroupMsg
 import cc.moecraft.icq.command.CommandProperties
 import cc.moecraft.icq.command.interfaces.GroupCommand
 import cc.moecraft.icq.event.events.message.EventGroupMessage
@@ -37,7 +40,7 @@ class SetuCommand : GroupCommand {
             }
             println(body)
             val url = GlobalObject.objectMapper.readValue(body, LoliconApiDataClass::class.java).data!![0].url
-            if (url != null) { getTask(url) } else { return "Lolicon网络有点问题(确信" }
+            if (url != null) { getTask(url,group) } else { return "Lolicon网络有点问题(确信" }
         } catch (e: IOException) {
             e.printStackTrace()
             return e.message!!
@@ -50,21 +53,21 @@ class SetuCommand : GroupCommand {
     }
 }
 
-private fun getTask(url: String)
+private fun getTask(url: String,group: Group)
 {
     val filePathMatcher = Pattern.compile("[0-9a-z._]*\$").matcher(url)
     filePathMatcher.find()
     val fileName = filePathMatcher.group(0)
     val filePath = "data/images/setu_img/$fileName"
     val imgFile = File(filePath)
-    if (imgFile.exists()) return onResponse("/setu_img/$fileName")
+    if (imgFile.exists()) return onResponse("/setu_img/$fileName", group.id)
     else
     {
         val client = OkHttpClient.Builder().connectTimeout(20,TimeUnit.SECONDS).readTimeout(20,TimeUnit.SECONDS).build()
         val request = Request.Builder().url(url).build()
         client.newCall(request).enqueue(object: Callback{
             override fun onFailure(call: okhttp3.Call, e: IOException) {
-                onFailure(e)
+                onFailure(e,group.id)
             }
             override fun onResponse(call: okhttp3.Call, response: Response) {
                 val inputStream = response.body()!!.byteStream()
@@ -80,24 +83,30 @@ private fun getTask(url: String)
                     fos.flush()
                     fos.close()
                 }
-                catch (e: IOException) { onFailure(e) }
-                onResponse("/setu_img/$fileName")
+                catch (e: IOException) { onFailure(e, group.id) }
+                onResponse("/setu_img/$fileName", group.id)
             }
         })
     }
 }
 
-private fun onFailure(e: IOException)
+private fun onFailure(e: IOException,group_id: Long)
 {
-    GroupMsg(InitCheck.GROUP_ID.toLong(),e.message!!)
-    GroupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+    GroupMsg(group_id,e.message!!)
+    GroupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
 }
 
-private fun onResponse(filePath: String)
+private fun onResponse(filePath: String,group_id: Long)
 {
-    val status = GroupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage(filePath)).toString())
+    val retrunData = RawGroupMsg(group_id,MessageBuilder().add(ComponentImage(filePath)).toString())!!
+    val messageId = retrunData.data.messageId
+    val status = retrunData.status
     if (status != ReturnStatus.ok)
     {
-        GroupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+        GroupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+    }
+    else
+    {
+        SetuList().put(filePath,messageId)
     }
 }

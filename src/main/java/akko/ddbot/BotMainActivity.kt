@@ -1,6 +1,7 @@
 package akko.ddbot
 
 import akko.ddbot.command.*
+import akko.ddbot.listener.ImgCollectListener
 import akko.ddbot.listener.ImgSeachListener
 import akko.ddbot.listener.TranslateListener
 import akko.ddbot.task.LiveRoomTask
@@ -26,7 +27,8 @@ class BotMainActivity {
 
             mainBot.eventManager.registerListeners(
                     TranslateListener(),
-                    ImgSeachListener()
+                    ImgSeachListener(),
+                    ImgCollectListener()
             )
             mainBot.commandManager.registerCommands(
                     AddListener(),

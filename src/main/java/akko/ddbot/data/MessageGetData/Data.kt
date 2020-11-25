@@ -14,7 +14,7 @@ class Data {
     var message: String? = null
 
     @JsonProperty("message_id")
-    var messageId = 0
+    var messageId: Long = 0
 
     @JsonProperty("real_id")
     var realId = 0

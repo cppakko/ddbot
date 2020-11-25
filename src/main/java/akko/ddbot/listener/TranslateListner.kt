@@ -32,7 +32,7 @@ class TranslateListener : IcqListener() {
                     val messageId = if (isMinus) "-" + matcher.group(3) else matcher.group(3)
                     try {
                         pattern = Pattern.compile("(file=)([0-9a-z.]*)")
-                        val imgM = pattern.matcher(getMsg(messageId))
+                        val imgM = pattern.matcher(getMsg(messageId).message)
                         if (imgM.find()) {
                             val data = ocrFun(imgM.group(2).toString()).data!!
                             val language = data.language
