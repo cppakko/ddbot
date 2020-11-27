@@ -15,8 +15,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 //发送群组消息
-fun GroupMsg(group_id: Long,msg: String): ReturnStatus? { return BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(group_id,msg).status }
-fun RawGroupMsg(group_id: Long,msg: String): ReturnData<RMessageReturnData>? { return BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(group_id,msg) }
+fun groupMsg(group_id: Long, msg: String): ReturnStatus? { return BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(group_id,msg).status }
+fun rawGroupMsg(group_id: Long, msg: String): ReturnData<RMessageReturnData>? { return BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(group_id,msg) }
 /**
  * @param msg_id CQHTTP消息ID
  */

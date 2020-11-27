@@ -1,7 +1,6 @@
 package akko.ddbot.utilities
 
 import akko.ddbot.data.SauceResult
-import com.fasterxml.jackson.databind.ObjectMapper
 import kotlin.math.min
 
 object SauceHelper {

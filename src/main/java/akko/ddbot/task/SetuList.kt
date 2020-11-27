@@ -4,11 +4,11 @@ import java.util.*
 
 class SetuList {
     companion object{
-        private val setuList = LinkedList<setu_msg>()
+        private val setuList = LinkedList<Setu_msg>()
     }
     fun put(filePath: String,message_id: Long)
     {
-        setuList.add(setu_msg(filePath,message_id))
+        setuList.add(Setu_msg(filePath,message_id))
         if (setuList.size >= 10)
         {
             setuList.removeAt(0)
@@ -28,7 +28,7 @@ class SetuList {
     }
 }
 
-private data class setu_msg(
+private data class Setu_msg(
         val filePath: String,
         val msgId: Long
 )

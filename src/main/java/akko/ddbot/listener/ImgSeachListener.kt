@@ -1,19 +1,17 @@
 package akko.ddbot.listener
 
-import akko.ddbot.BotMainActivity
 import akko.ddbot.InitCheck
 import akko.ddbot.data.CQImageData
 import akko.ddbot.data.GetMsgData
 import akko.ddbot.network.SaucenaoApiService
 import akko.ddbot.utilities.GlobalObject
-import akko.ddbot.utilities.GroupMsg
+import akko.ddbot.utilities.groupMsg
 import akko.ddbot.utilities.SauceHelper
 import cc.moecraft.icq.event.EventHandler
 import cc.moecraft.icq.event.IcqListener
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.sender.message.MessageBuilder
 import cc.moecraft.icq.sender.message.components.ComponentImage
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -50,7 +48,7 @@ class ImgSeachListener : IcqListener() {
                                 val getImgRequest = Request.Builder().url("http://0.0.0.0:5700/get_image?file=" + imgM.group(2) + "&access_token=" + InitCheck.ACCESS_TOKEN).build()
                                 client.newCall(getImgRequest).enqueue(object: Callback{
                                     override fun onFailure(call: Call, e: IOException) {
-                                        GroupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+                                        groupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
                                     }
                                     override fun onResponse(call: Call, response: Response) {
                                         val body = response.body()!!.string()
@@ -74,11 +72,11 @@ class ImgSeachListener : IcqListener() {
                                                         add("你这图怎么回事啊")
                                                     }
                                                 }
-                                                GroupMsg(event.groupId,builder.toString())
+                                                groupMsg(event.groupId,builder.toString())
                                             }
 
                                             override fun onFailure(call: retrofit2.Call<ResponseBody?>, t: Throwable) {
-                                                GroupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+                                                groupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
                                             }
                                         })
                                     }

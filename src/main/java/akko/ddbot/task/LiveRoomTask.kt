@@ -35,7 +35,7 @@ val LiveRoomTask = Thread {
                 val statusindb = sqliteC.prepareStatement("select * from  vLiver WHERE vID = '$vID';").executeQuery().getInt("vSTATE")
                 if (statusRightNow == 1 && statusindb == 0) {
                     sqliteC.prepareStatement("UPDATE vLiver SET vSTATE = 1 WHERE vID = $vID;").execute()
-                    RemindListener().RemindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
+                    RemindListener().remindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
                 } else if (statusRightNow == 0 && statusindb == 1) {
                     sqliteC.prepareStatement("UPDATE vLiver SET vSTATE = 0 WHERE vID = $vID;").execute()
                 }

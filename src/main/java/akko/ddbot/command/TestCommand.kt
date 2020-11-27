@@ -7,8 +7,7 @@ import cc.moecraft.icq.sender.message.MessageBuilder
 import cc.moecraft.icq.sender.message.components.ComponentImage
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
-import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 class TestCommand : GroupCommand{
     override fun properties(): CommandProperties {

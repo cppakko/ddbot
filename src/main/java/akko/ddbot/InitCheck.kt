@@ -3,7 +3,6 @@ package akko.ddbot
 import akko.ddbot.data.BotConfigData
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
-import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.File
 import java.io.IOException
 import kotlin.system.exitProcess

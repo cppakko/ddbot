@@ -6,10 +6,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.channels.FileChannel
 
-
-class FileHelper {
-}
-
 @Throws(IOException::class)
 fun copyFile(source: File, dest: File) {
     var inputChannel: FileChannel? = null

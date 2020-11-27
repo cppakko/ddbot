@@ -6,7 +6,7 @@ import cc.moecraft.icq.event.events.message.EventMessage
 import cc.moecraft.icq.user.User
 import java.util.*
 
-class isAlive : EverywhereCommand {
+class IsAlive : EverywhereCommand {
     override fun run(eventMessage: EventMessage, user: User, s: String, arrayList: ArrayList<String>): String {
         return "感觉良好 由PicqBotX和Kotlin强力驱动"
     }

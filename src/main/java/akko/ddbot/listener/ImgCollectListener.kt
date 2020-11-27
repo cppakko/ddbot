@@ -4,7 +4,6 @@ import akko.ddbot.InitCheck
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.task.SetuList
 import akko.ddbot.utilities.PatternHelper
-import akko.ddbot.utilities.copyFile
 import akko.ddbot.utilities.getImg
 import akko.ddbot.utilities.getMsg
 import cc.moecraft.icq.event.EventHandler
@@ -14,7 +13,6 @@ import cc.moecraft.utils.FileUtils
 import net.coobird.thumbnailator.Thumbnails
 import org.sqlite.SQLiteException
 import java.io.File
-import java.io.IOException
 import java.sql.SQLException
 import java.util.*
 import java.util.regex.Pattern
@@ -81,7 +79,7 @@ class ImgCollectListener : IcqListener() {
                     catch (e: SQLiteException) {
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
-                        return;
+                        return
                     }
                 } else {
                     try {

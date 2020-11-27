@@ -1,18 +1,15 @@
 package akko.ddbot.listener
 
 import akko.ddbot.InitCheck
-import akko.ddbot.data.OCRdata.OCRdata
 import akko.ddbot.data.TranslateData.TranslateData
-import akko.ddbot.utilities.translate.TransApi
 import akko.ddbot.utilities.GlobalObject
 import akko.ddbot.utilities.getMsg
 import akko.ddbot.utilities.ocrFun
+import akko.ddbot.utilities.translate.TransApi
 import cc.moecraft.icq.event.EventHandler
 import cc.moecraft.icq.event.IcqListener
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.sender.message.MessageBuilder
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.io.IOException
 import java.util.regex.Pattern
 

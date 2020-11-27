@@ -1,10 +1,9 @@
 package akko.ddbot.task
 
-import akko.ddbot.BotMainActivity
 import akko.ddbot.InitCheck
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.sql.TwoTuple
-import akko.ddbot.utilities.GroupMsg
+import akko.ddbot.utilities.groupMsg
 import cc.moecraft.icq.sender.message.MessageBuilder
 import cc.moecraft.icq.sender.message.components.ComponentAt
 import cc.moecraft.icq.sender.message.components.ComponentImage
@@ -14,7 +13,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 
 class RemindListener {
-    fun RemindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
+    fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
         try {
             val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("ListenerInfo", "select * from  V$vID;")
             val res: ResultSet = tuple!!.resultSet
@@ -41,15 +40,15 @@ class RemindListener {
             }
             tuple.connection.close()
             val groupId = InitCheck.GROUP_ID.toLong()
-            var rStatus = GroupMsg(groupId, mb.toString())
+            var rStatus = groupMsg(groupId, mb.toString())
             var retryCount = 0
             while (rStatus != ReturnStatus.ok && retryCount <= 5) {
                 if (retryCount == 5) {
-                    GroupMsg(groupId, "重试了五次也没发出来  饶了我吧(哭")
-                    GroupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+                    groupMsg(groupId, "重试了五次也没发出来  饶了我吧(哭")
+                    groupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
                     break
                 }
-                rStatus = GroupMsg(groupId, mb.toString())
+                rStatus = groupMsg(groupId, mb.toString())
                 retryCount++
             }
         } catch (e: SQLException) {

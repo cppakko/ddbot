@@ -3,11 +3,10 @@ package akko.ddbot.command
 import akko.ddbot.InitCheck
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
 import akko.ddbot.network.LoliconApiNetwork
-import akko.ddbot.sql.SQLFun
 import akko.ddbot.task.SetuList
 import akko.ddbot.utilities.GlobalObject
-import akko.ddbot.utilities.GroupMsg
-import akko.ddbot.utilities.RawGroupMsg
+import akko.ddbot.utilities.groupMsg
+import akko.ddbot.utilities.rawGroupMsg
 import cc.moecraft.icq.command.CommandProperties
 import cc.moecraft.icq.command.interfaces.GroupCommand
 import cc.moecraft.icq.event.events.message.EventGroupMessage
@@ -92,18 +91,18 @@ private fun getTask(url: String,group: Group)
 
 private fun onFailure(e: IOException,group_id: Long)
 {
-    GroupMsg(group_id,e.message!!)
-    GroupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+    groupMsg(group_id,e.message!!)
+    groupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
 }
 
 private fun onResponse(filePath: String,group_id: Long)
 {
-    val retrunData = RawGroupMsg(group_id,MessageBuilder().add(ComponentImage(filePath)).toString())!!
+    val retrunData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage(filePath)).toString())!!
     val messageId = retrunData.data.messageId
     val status = retrunData.status
     if (status != ReturnStatus.ok)
     {
-        GroupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+        groupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
     }
     else
     {

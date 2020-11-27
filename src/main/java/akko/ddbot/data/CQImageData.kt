@@ -1,5 +1,5 @@
 package akko.ddbot.data
-class CQImageData(
+data class CQImageData(
         val `data`: Data,
         val retcode: Int,
         val status: String

@@ -65,7 +65,7 @@ internal object HttpGet {
         return null
     }
 
-    fun getUrlWithQueryString(url: String, params: Map<String?, String?>?): String {
+    private fun getUrlWithQueryString(url: String, params: Map<String?, String?>?): String {
         if (params == null) {
             return url
         }
@@ -107,7 +107,7 @@ internal object HttpGet {
      * @param input 原文
      * @return URL编码. 如果编码失败, 则返回原文
      */
-    fun encode(input: String?): String {
+    private fun encode(input: String?): String {
         if (input == null) {
             return ""
         }
