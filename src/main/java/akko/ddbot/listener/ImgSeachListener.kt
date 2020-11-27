@@ -2,8 +2,8 @@ package akko.ddbot.listener
 
 import akko.ddbot.BotMainActivity
 import akko.ddbot.InitCheck
-import akko.ddbot.data.CQGetImgData.CQGetImgData
-import akko.ddbot.data.MessageGetData.MesGetData
+import akko.ddbot.data.CQImageData
+import akko.ddbot.data.GetMsgData
 import akko.ddbot.network.SaucenaoApiService
 import akko.ddbot.utilities.GlobalObject
 import akko.ddbot.utilities.GroupMsg
@@ -14,6 +14,7 @@ import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.sender.message.MessageBuilder
 import cc.moecraft.icq.sender.message.components.ComponentImage
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.*
@@ -42,7 +43,7 @@ class ImgSeachListener : IcqListener() {
                         val call = client.newCall(request)
                         try {
                             val body = call.execute().body()!!.string()
-                            val rawImginfo = GlobalObject.objectMapper.readValue(body, MesGetData::class.java).data!!.message
+                            val rawImginfo = GlobalObject.jacksonObjectMapper.readValue<GetMsgData>(body).data.message
                             pattern = Pattern.compile("(file=)([0-9a-z.]*)")
                             val imgM = pattern.matcher(rawImginfo)
                             if (imgM.find()) {
@@ -53,7 +54,7 @@ class ImgSeachListener : IcqListener() {
                                     }
                                     override fun onResponse(call: Call, response: Response) {
                                         val body = response.body()!!.string()
-                                        val imgQqUrl = GlobalObject.objectMapper.readValue(body, CQGetImgData::class.java).data!!.url
+                                        val imgQqUrl = GlobalObject.jacksonObjectMapper.readValue<CQImageData>(body).data.url
                                         val retrofit = Retrofit.Builder().baseUrl("https://saucenao.com/").build()
                                         retrofit.create(SaucenaoApiService::class.java)[999, 2, 1, 1, imgQqUrl, InitCheck.SAUCENAO_API_KEY]?.enqueue(object: retrofit2.Callback<ResponseBody?> {
                                             override fun onResponse(call: retrofit2.Call<ResponseBody?>, response: retrofit2.Response<ResponseBody?>) {

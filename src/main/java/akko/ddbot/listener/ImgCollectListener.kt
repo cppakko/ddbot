@@ -25,7 +25,7 @@ class ImgCollectListener : IcqListener() {
         val matcher = pattern.matcher(event.message)
         if (matcher.find() && matcher.group(4) == "这个好") {
             val data = getMsg(matcher.group(2))
-            if (data.sender!!.userId != 395837251) {
+            if (data.sender.user_id != 395837251) {
                 val pattern = Pattern.compile("(\\[CQ:image,file=)([a-z0-9.]*)")
                 val matcher = pattern.matcher(data.message)
                 matcher.find()
@@ -74,7 +74,7 @@ class ImgCollectListener : IcqListener() {
                     event.respond("添加成功 yattaze")
                 }
             } else {
-                val path = "data/images" + SetuList().find(data.messageId)
+                val path = "data/images" + SetuList().find(data.message_id)
                 val pattern = Pattern.compile("(/setu_img/)([0-9_a-z]*)")
                 val matcher = pattern.matcher(path)
                 matcher.find()

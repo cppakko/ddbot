@@ -3,8 +3,8 @@ package akko.ddbot.utilities
 import akko.ddbot.BotMainActivity
 import akko.ddbot.InitCheck
 import akko.ddbot.data.CQImageData
-import akko.ddbot.data.MessageGetData.Data
-import akko.ddbot.data.MessageGetData.MesGetData
+import akko.ddbot.data.GetMsgData
+import akko.ddbot.data.MsgData
 import akko.ddbot.data.OCRdata.OCRdata
 import cc.moecraft.icq.sender.returndata.ReturnData
 import cc.moecraft.icq.sender.returndata.ReturnStatus
@@ -20,14 +20,14 @@ fun RawGroupMsg(group_id: Long,msg: String): ReturnData<RMessageReturnData>? { r
 /**
  * @param msg_id CQHTTP消息ID
  */
-fun getMsg(msg_id:String): Data
+fun getMsg(msg_id:String): MsgData
 {
     val url = "http://0.0.0.0:5700/get_msg?message_id=" + msg_id + "&access_token=" + InitCheck.ACCESS_TOKEN
     val client = OkHttpClient()
     val request = Request.Builder().url(url).build()
     val call = client.newCall(request)
     val body = call.execute().body()!!.string()
-    return GlobalObject.objectMapper.readValue(body, MesGetData::class.java).data!!
+    return GlobalObject.jacksonObjectMapper.readValue<GetMsgData>(body).data
 }
 /**
  * @param imgFile 文件相对 {go-cqhttp安装目录}/data/images/下的文件名
