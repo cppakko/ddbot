@@ -41,6 +41,18 @@ fun ocrFun(imgFile: String): OCRdata {
     return GlobalObject.objectMapper.readValue(jsBody, OCRdata::class.java)!!
 }
 
+
+/*{
+    "data": {
+    "file": "data/cache/6c5b4573d8928ed872fbff5d76b304ab.image..jpg",
+    "filename": "{6C5B4573-D892-8ED8-72FB-FF5D76B304AB}.jpg",
+    "size": 67405,
+    "url": "http://qq.com"
+},
+    "retcode": 0,
+    "status": "ok"
+}*/
+
 fun getImg(image_id: String): CQImageData
 {
     val url = "http://0.0.0.0:" + InitCheck.POST_PORT.toString() + "/get_image?file=" + image_id + "&access_token=" + InitCheck.ACCESS_TOKEN

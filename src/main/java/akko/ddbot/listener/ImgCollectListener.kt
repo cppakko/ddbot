@@ -3,6 +3,7 @@ package akko.ddbot.listener
 import akko.ddbot.InitCheck
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.task.SetuList
+import akko.ddbot.utilities.PatternHelper
 import akko.ddbot.utilities.copyFile
 import akko.ddbot.utilities.getImg
 import akko.ddbot.utilities.getMsg
@@ -25,15 +26,12 @@ class ImgCollectListener : IcqListener() {
         val matcher = pattern.matcher(event.message)
         if (matcher.find() && matcher.group(4) == "这个好") {
             val data = getMsg(matcher.group(2))
+            //判断是否为机器人发送的图片
             if (data.sender.user_id != 395837251) {
-                val pattern = Pattern.compile("(\\[CQ:image,file=)([a-z0-9.]*)")
-                val matcher = pattern.matcher(data.message)
-                matcher.find()
-                var path = getImg(matcher.group(2)).data.file
-                val pattern1 = Pattern.compile("([0-9a-z.]*)\$")
-                val matcher1 = pattern1.matcher(path)
-                matcher1.find()
-                val fileName = matcher1.group(1)
+                // [CQ:image,file=6c5b4573d8928ed872fbff5d76b304ab.image] <- 正则例子
+                var path = getImg(PatternHelper().regexHelper("(\\[CQ:image,file=)([a-z0-9.]*)",data.message).group(2)).data.file
+                //6c5b4573d8928ed872fbff5d76b304ab.image
+                val fileName = PatternHelper().regexHelper("([0-9a-z.]*)\$",path).group(1)
                 val newFile = File("data/images/img/$fileName")
                 if (newFile.exists()) {
                     val rawFile = "data/images/img/$fileName"
@@ -50,15 +48,10 @@ class ImgCollectListener : IcqListener() {
                     }
                     event.respond("添加成功 yattaze")
                 } else {
-                    try {
-                        path = "data/cache/$fileName"
-                        FileUtils.copy(File(path), newFile)
-                        path = "data/images/img/$fileName"
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
-                        return
-                    }
+                    path = "data/cache/$fileName"
+                    //复制图片 持久保存
+                    FileUtils.copy(File(path), newFile)
+                    path = "data/images/img/$fileName"
                     val thumbnailsPath = "data/images/img_thumbnails/" + fileName + "_thumbnail" + ".jpg"
                     Thumbnails.of(path).size(800, 800).toFile(thumbnailsPath)
                     try {
@@ -75,10 +68,8 @@ class ImgCollectListener : IcqListener() {
                 }
             } else {
                 val path = "data/images" + SetuList().find(data.message_id)
-                val pattern = Pattern.compile("(/setu_img/)([0-9_a-z]*)")
-                val matcher = pattern.matcher(path)
-                matcher.find()
-                val thumbnailsPath = "data/images/img_thumbnails/" + matcher.group(2) + "_thumbnail" + ".jpg"
+                //jn123jn4_p0.jpg
+                val thumbnailsPath = "data/images/img_thumbnails/" + PatternHelper().regexHelper("(/setu_img/)([0-9_a-z]*)",path).group(2) + "_thumbnail" + ".jpg"
                 if (File(thumbnailsPath).exists()) {
                     try {
                         val tuple = SQLFun().executeQuery("ImgCollect", "SELECT picture_id from ImgInfo where thumbnail='$thumbnailsPath';")
@@ -86,11 +77,8 @@ class ImgCollectListener : IcqListener() {
                         tuple.connection.close()
                         val time = Date().time / 1000L
                         SQLFun().execute("ImgCollect", "INSERT INTO CollectInfo VALUES (${event.senderId},'$pictureId','$time');")
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
-                        return;
-                    } catch (e: SQLiteException) {
+                    }
+                    catch (e: SQLiteException) {
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
                         return;
@@ -102,14 +90,10 @@ class ImgCollectListener : IcqListener() {
                         InitCheck.MAX_PICTURE_ID++
                         val time = Date().time / 1000L
                         SQLFun().execute("ImgCollect", "INSERT INTO CollectInfo VALUES (${event.senderId},'${InitCheck.MAX_PICTURE_ID}','$time');")
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
-                        return;
                     } catch (e: SQLiteException) {
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
-                        return;
+                        return
                     }
                     event.respond("添加成功 yattaze")
                 }
