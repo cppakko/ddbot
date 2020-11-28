@@ -35,7 +35,6 @@ class BotMainActivity {
                     AddLiver(),
                     DiceMan(),
                     HelpCommand(),
-                    IsAlive(),
                     RemoveListener(),
                     SetuCommand(),
                     vLiverFinder(),
