@@ -2,7 +2,6 @@ package akko.ddbot.listener
 
 import akko.ddbot.InitCheck
 import akko.ddbot.sql.SQLFun
-import akko.ddbot.task.SetuList
 import akko.ddbot.utilities.PatternHelper
 import akko.ddbot.utilities.getImg
 import akko.ddbot.utilities.getMsg
@@ -14,7 +13,6 @@ import net.coobird.thumbnailator.Thumbnails
 import org.sqlite.SQLiteException
 import java.io.File
 import java.sql.DriverManager
-import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.*
 import java.util.regex.Pattern
@@ -67,7 +65,8 @@ class ImgCollectListener : IcqListener() {
                     event.respond("添加成功 yattaze")
                 }
             } else {
-                val path = SetuList().find(data.message_id)
+                val t = SQLFun().executeQuery("bot","SELECT filepath from setulist.list where message_id = '${data.message_id}';")
+                val path = t!!.resultSet.getString(1)
                 //jn123jn4_p0.jpg
                 val thumbnailsPath = "data/images/img_thumbnails/" + PatternHelper().regexHelper("(/setu_img/)([0-9_a-z]*)",path).group(2) + "_thumbnail" + ".jpg"
                 println(thumbnailsPath)
@@ -77,7 +76,7 @@ class ImgCollectListener : IcqListener() {
                 if (res.next()) {
                     sqliteC.close()
                     try {
-                        val tuple = SQLFun().executeQuery("bot", "SELECT imgcollect.picture_id from ImgInfo where thumbnail='$thumbnailsPath';")
+                        val tuple = SQLFun().executeQuery("bot", "SELECT imgcollect.picture_id from imginfo where thumbnail='$thumbnailsPath';")
                         val pictureId = tuple!!.resultSet.getInt(1)
                         tuple.connection.close()
                         val time = Date().time / 1000L
