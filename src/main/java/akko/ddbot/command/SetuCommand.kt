@@ -3,7 +3,7 @@ package akko.ddbot.command
 import akko.ddbot.InitCheck
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
 import akko.ddbot.network.LoliconApiNetwork
-import akko.ddbot.task.SetuList
+import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
 import akko.ddbot.utilities.groupMsg
 import akko.ddbot.utilities.rawGroupMsg
@@ -15,7 +15,6 @@ import cc.moecraft.icq.sender.message.components.ComponentImage
 import cc.moecraft.icq.sender.returndata.ReturnStatus
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
-import net.coobird.thumbnailator.Thumbnailator
 import net.coobird.thumbnailator.Thumbnails
 import okhttp3.*
 import retrofit2.Call
@@ -99,7 +98,10 @@ private fun onFailure(e: IOException,group_id: Long)
 
 private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fileName: String)
 {
-    Thumbnails.of(filePath).size(800,800).toFile(thumbnail_path)
+    if (!File(thumbnail_path).exists())
+    {
+        Thumbnails.of(filePath).size(800,800).toFile(thumbnail_path)
+    }
     val retrunData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbanil.jpg")).toString())!!
     val messageId = retrunData.data.messageId
     val status = retrunData.status
@@ -109,6 +111,13 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
     }
     else
     {
-        SetuList().put(thumbnail_path,filePath,messageId)
+        SQLFun().execute("bot","INSERT INTO setulist.list VALUES('$messageId','$filePath','$thumbnail_path',${(Date().time / 1000L)});")
+        val t = SQLFun().executeQuery("bot","SELECT count(*) from setulist.list;")
+        val set = t!!.resultSet
+        if (set.getInt(1) > 10)
+        {
+            SQLFun().execute("bot","DELETE FROM setulist.list WHERE message_id = (SELECT message_id from setulist.list WHERE sendtime = (SELECT MIN(sendtime) from setulist.list));")
+        }
+        t.connection.close()
     }
 }
