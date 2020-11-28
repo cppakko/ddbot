@@ -17,5 +17,5 @@ data class MsgData(
 
 data class Sender(
         val nickname: String,
-        val user_id: Int
+        val user_id: Long
 )

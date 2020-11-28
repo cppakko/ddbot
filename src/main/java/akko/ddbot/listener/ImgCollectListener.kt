@@ -24,8 +24,9 @@ class ImgCollectListener : IcqListener() {
         val matcher = pattern.matcher(event.message)
         if (matcher.find() && matcher.group(4) == "这个好") {
             val data = getMsg(matcher.group(2))
+            val bot_id: Long = 395837251
             //判断是否为机器人发送的图片
-            if (data.sender.user_id != 395837251) {
+            if (data.sender.user_id != bot_id) {
                 // [CQ:image,file=6c5b4573d8928ed872fbff5d76b304ab.image] <- 正则例子
                 var path = getImg(PatternHelper().regexHelper("(\\[CQ:image,file=)([a-z0-9.]*)",data.message).group(2)).data.file
                 //6c5b4573d8928ed872fbff5d76b304ab.image
