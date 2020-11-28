@@ -19,8 +19,8 @@ class AddLiver : GroupCommand {
         val arr = arg0.getMessage().split(" ".toRegex()).toTypedArray()
         if (arr.size == 3) {
             SQLFun().run {
-                execute("ListenerInfo", "create table V" + arr[1] + "(ID TEXT PRIMARY KEY NOT NULL) ;")
-                execute("GroupInfo", "insert into vLiver values ('" + arr[1] + "','" + arr[2] + "',0);")
+                execute("bot", "create table v" + arr[1] + "(ID TEXT PRIMARY KEY NOT NULL) ;")
+                execute("bot", "insert into groupinfo.vliver values ('" + arr[1] + "','" + arr[2] + "',0);")
             }
             LiverInit.init()
         } else {

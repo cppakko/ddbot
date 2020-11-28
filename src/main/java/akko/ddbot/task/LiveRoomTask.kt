@@ -18,7 +18,7 @@ val LiveRoomTask = Thread {
         while (true) {
             LiverInit()
             val liverList: List<String>? = LiverInit.liverList
-            val sqliteC: Connection = SQLFun().connection("GroupInfo")!!
+            val sqliteC: Connection = SQLFun().connection("bot")!!
             for (vID in liverList!!) {
                 val call = retrofit.create(BilibiliApiService::class.java).getDatCall(vID)
                 val rawBody = call!!.execute().body()
@@ -32,12 +32,14 @@ val LiveRoomTask = Thread {
                 val liveRoomData = data.live_room
                 val statusRightNow = liveRoomData.liveStatus
                 println(vID)
-                val statusindb = sqliteC.prepareStatement("select * from  vLiver WHERE vID = '$vID';").executeQuery().getInt("vSTATE")
+                val resultSet= sqliteC.prepareStatement("select * from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
+                resultSet.next()
+                val statusindb = resultSet.getInt("vSTATE")
                 if (statusRightNow == 1 && statusindb == 0) {
-                    sqliteC.prepareStatement("UPDATE vLiver SET vSTATE = 1 WHERE vID = $vID;").execute()
+                    sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 1 WHERE \"vID\" = '$vID';").execute()
                     RemindListener().remindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
                 } else if (statusRightNow == 0 && statusindb == 1) {
-                    sqliteC.prepareStatement("UPDATE vLiver SET vSTATE = 0 WHERE vID = $vID;").execute()
+                    sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 0 WHERE \"vID\" = '$vID';").execute()
                 }
             }
             sqliteC.close()

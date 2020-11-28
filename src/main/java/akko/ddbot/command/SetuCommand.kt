@@ -15,6 +15,8 @@ import cc.moecraft.icq.sender.message.components.ComponentImage
 import cc.moecraft.icq.sender.returndata.ReturnStatus
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
+import net.coobird.thumbnailator.Thumbnailator
+import net.coobird.thumbnailator.Thumbnails
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -59,7 +61,7 @@ private fun getTask(url: String,group: Group)
     val fileName = filePathMatcher.group(0)
     val filePath = "data/images/setu_img/$fileName"
     val imgFile = File(filePath)
-    if (imgFile.exists()) return onResponse("/setu_img/$fileName", group.id)
+    if (imgFile.exists()) return onResponse("setu_img/$fileName","/img_thumbnails/" + fileName + "_thumbanil.jpg", group.id,fileName)
     else
     {
         val client = OkHttpClient.Builder().connectTimeout(20,TimeUnit.SECONDS).readTimeout(20,TimeUnit.SECONDS).build()
@@ -83,7 +85,7 @@ private fun getTask(url: String,group: Group)
                     fos.close()
                 }
                 catch (e: IOException) { onFailure(e, group.id) }
-                onResponse("/setu_img/$fileName", group.id)
+                onResponse("data/images/setu_img/$fileName", "data/images/img_thumbnails/" + fileName + "_thumbanil.jpg",group.id,fileName)
             }
         })
     }
@@ -95,9 +97,10 @@ private fun onFailure(e: IOException,group_id: Long)
     groupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
 }
 
-private fun onResponse(filePath: String,group_id: Long)
+private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fileName: String)
 {
-    val retrunData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage(filePath)).toString())!!
+    Thumbnails.of(filePath).size(800,800).toFile(thumbnail_path)
+    val retrunData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbanil.jpg")).toString())!!
     val messageId = retrunData.data.messageId
     val status = retrunData.status
     if (status != ReturnStatus.ok)
@@ -106,6 +109,6 @@ private fun onResponse(filePath: String,group_id: Long)
     }
     else
     {
-        SetuList().put(filePath,messageId)
+        SetuList().put(thumbnail_path,filePath,messageId)
     }
 }

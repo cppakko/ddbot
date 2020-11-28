@@ -13,7 +13,7 @@ class LiverInit {
         fun init() {
             liverList = LinkedList()
             try {
-                val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("GroupInfo", "SELECT * FROM vLiver;")
+                val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("bot", "SELECT * FROM groupinfo.vliver;")
                 val set: ResultSet = tuple!!.resultSet
                 while (set.next()) {
                     (liverList as LinkedList<String>).add(set.getString("vID"))

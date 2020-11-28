@@ -1,14 +1,15 @@
 package akko.ddbot.task
 
+import akko.ddbot.data.SetuMsg
 import java.util.*
 
 class SetuList {
     companion object{
-        private val setuList = LinkedList<Setu_msg>()
+        private val setuList = LinkedList<SetuMsg>()
     }
-    fun put(filePath: String,message_id: Long)
+    fun put(thumbnailPath:String,filePath: String,message_id: Long)
     {
-        setuList.add(Setu_msg(filePath,message_id))
+        setuList.add(SetuMsg(thumbnailPath,filePath,message_id))
         if (setuList.size >= 10)
         {
             setuList.removeAt(0)
@@ -27,8 +28,3 @@ class SetuList {
         return "null"
     }
 }
-
-private data class Setu_msg(
-        val filePath: String,
-        val msgId: Long
-)

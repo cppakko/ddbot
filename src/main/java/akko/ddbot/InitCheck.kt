@@ -18,9 +18,11 @@ object InitCheck {
     var LOLICON_APIKEY: String? = null
     var SAUCENAO_API_KEY: String? = null
     var MAX_PICTURE_ID: Long = 0
-
+    var POSTGRE_USER:String? = null
+    var POSTGRE_PASSWD:String? = null
+    var POSTGRE_URL:String? = null
     fun installCheck() {
-        val isInstalled = File("isInstalled")
+        val isInstalled = File(".isInstalled")
         val botXconfig = File("botXconfig.json")
         if (!isInstalled.exists()) {
             try {
@@ -32,6 +34,7 @@ object InitCheck {
                 botConfigData.baiduAppId = ""
                 botConfigData.baiduSecurityKey = ""
                 botConfigData.loliconApikey = ""
+                botConfigData.saucenaoApiKey = ""
                 GlobalObject.objectMapper.writeValue(botXconfig, botConfigData)
                 println("请对botXconfig.json完成修改后重启 别填错了别填错了别填错了")
                 exitProcess(0)
@@ -50,8 +53,11 @@ object InitCheck {
                 BAIDU_SECURITY_KEY = botConfigData.baiduSecurityKey
                 LOLICON_APIKEY = botConfigData.loliconApikey
                 SAUCENAO_API_KEY = botConfigData.saucenaoApiKey
+                POSTGRE_PASSWD = botConfigData.postgrePasswd
+                POSTGRE_URL = botConfigData.postgreUrl
+                POSTGRE_USER = botConfigData.postgreUser
 
-                MAX_PICTURE_ID = SQLFun().executeQuery("ImgCollect","select max(picture_id) from ImgInfo;")!!.resultSet.getLong(1)
+                MAX_PICTURE_ID = SQLFun().executeQuery("bot","select max(picture_id) from imgcollect.imginfo;")!!.resultSet.getLong(1)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

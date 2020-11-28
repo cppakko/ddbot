@@ -33,4 +33,13 @@ class BotConfigData {
 
     @JsonProperty("SauceNAO_API_KEY")
     var saucenaoApiKey: String? = null
+
+    @JsonProperty("postgre_user")
+    var postgreUser:String? = null
+
+    @JsonProperty("postgre_passwd")
+    var postgrePasswd:String? = null
+
+    @JsonProperty("postgre_url")
+    var postgreUrl:String? = null
 }

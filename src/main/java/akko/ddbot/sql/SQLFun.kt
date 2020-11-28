@@ -1,5 +1,6 @@
 package akko.ddbot.sql
 
+import akko.ddbot.InitCheck
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
@@ -9,8 +10,8 @@ class SQLFun {
     fun execute(databaseName: String, sql: String): Boolean
     {
         try {
-            Class.forName("org.sqlite.JDBC")
-            val sqliteC = DriverManager.getConnection("jdbc:sqlite:db/$databaseName.db")
+            Class.forName("org.postgresql.Driver")
+            val sqliteC = DriverManager.getConnection("jdbc:postgresql://${InitCheck.POSTGRE_URL}/$databaseName",InitCheck.POSTGRE_USER,InitCheck.POSTGRE_PASSWD)
             val res = sqliteC.prepareStatement(sql).execute()
             sqliteC.close()
             return res
@@ -25,9 +26,10 @@ class SQLFun {
     }
     fun executeQuery(databaseName: String, sql: String?): TwoTuple<ResultSet?, Connection?>? {
         try {
-            Class.forName("org.sqlite.JDBC")
-            val sqliteC = DriverManager.getConnection("jdbc:sqlite:db/$databaseName.db")
+            Class.forName("org.postgresql.Driver")
+            val sqliteC = DriverManager.getConnection("jdbc:postgresql://${InitCheck.POSTGRE_URL}/$databaseName",InitCheck.POSTGRE_USER,InitCheck.POSTGRE_PASSWD)
             val res = sqliteC.prepareStatement(sql).executeQuery()
+            res.next()
             return TwoTuple(res, sqliteC)
         } catch (e: ClassNotFoundException) {
             println(e.message)
@@ -40,8 +42,8 @@ class SQLFun {
     }
     fun connection(databaseName: String): Connection? {
         try {
-            Class.forName("org.sqlite.JDBC")
-            return DriverManager.getConnection("jdbc:sqlite:db/$databaseName.db")
+            Class.forName("org.postgresql.Driver")
+            return DriverManager.getConnection("jdbc:postgresql://${InitCheck.POSTGRE_URL}/$databaseName",InitCheck.POSTGRE_USER,InitCheck.POSTGRE_PASSWD)
         } catch (e: ClassNotFoundException) {
             println(e.message)
             e.printStackTrace()

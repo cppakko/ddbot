@@ -17,7 +17,7 @@ class AddListener : GroupCommand {
                               arg4: ArrayList<String>): String {
         val arr = arg0.getMessage().split(" ".toRegex()).toTypedArray()
         return if (arr.size == 2) {
-            SQLFun().execute("ListenerInfo", "INSERT INTO V" + arr[1] + " VALUES('" + arg1.id + "');")
+            SQLFun().execute("bot", "INSERT INTO listenerinfo.v" + arr[1] + " VALUES('" + arg1.id + "');")
             "操作成功 yattaze"
         } else {
             "ERR 输入有误"

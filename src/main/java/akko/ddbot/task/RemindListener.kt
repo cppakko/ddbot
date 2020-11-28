@@ -15,7 +15,7 @@ import java.sql.SQLException
 class RemindListener {
     fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
         try {
-            val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("ListenerInfo", "select * from  V$vID;")
+            val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("bot", "select * from listenerinfo.v$vID;")
             val res: ResultSet = tuple!!.resultSet
             val mb = MessageBuilder()
             var count = 0

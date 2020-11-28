@@ -21,8 +21,7 @@ class vLiverFinder : GroupCommand {
     override fun groupMessage(arg0: EventGroupMessage, arg1: GroupUser, arg2: Group, arg3: String,
                               arg4: ArrayList<String>): String {
         return try {
-            Class.forName("org.sqlite.JDBC")
-            val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("GroupInfo", "SELECT * FROM vLiver;")
+            val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("bot", "SELECT * FROM groupinfo.vliver;")
             val set: ResultSet = tuple!!.resultSet
             val mb = MessageBuilder()
             mb.add("----------").newLine()
