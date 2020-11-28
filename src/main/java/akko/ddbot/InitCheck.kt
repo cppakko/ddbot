@@ -5,6 +5,7 @@ import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
 import java.io.File
 import java.io.IOException
+import java.sql.DriverManager
 import kotlin.system.exitProcess
 
 object InitCheck {
@@ -36,7 +37,8 @@ object InitCheck {
                 botConfigData.loliconApikey = ""
                 botConfigData.saucenaoApiKey = ""
                 GlobalObject.objectMapper.writeValue(botXconfig, botConfigData)
-                println("请对botXconfig.json完成修改后重启 别填错了别填错了别填错了")
+
+                GlobalObject.log.debug("请对botXconfig.json完成修改后重启 别填错了别填错了别填错了")
                 exitProcess(0)
             } catch (e: IOException) {
                 e.printStackTrace()
