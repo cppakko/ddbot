@@ -5,7 +5,12 @@ import akko.ddbot.InitCheck
 import akko.ddbot.data.BilibiliApi.BilibiliDataClass
 import akko.ddbot.network.BilibiliApiService
 import akko.ddbot.sql.SQLFun
+import akko.ddbot.utilities.GlobalObject
 import com.fasterxml.jackson.module.kotlin.*
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import java.io.IOException
 import java.sql.Connection
@@ -18,31 +23,37 @@ val LiveRoomTask = Thread {
         while (true) {
             LiverInit()
             val liverList: List<String>? = LiverInit.liverList
-            val sqliteC: Connection = SQLFun().connection("bot")!!
             for (vID in liverList!!) {
                 val call = retrofit.create(BilibiliApiService::class.java).getDatCall(vID)
-                val rawBody = call!!.execute().body()
-                val body = if (rawBody != null) {
-                    rawBody.string()
-                } else {
-                    BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(InitCheck.GROUP_ID.toLong(), "b站网络出问题了(确信")
-                    continue
-                }
-                val data = oMapper.readValue<BilibiliDataClass>(body).data
-                val liveRoomData = data.live_room
-                val statusRightNow = liveRoomData.liveStatus
-                println(vID)
-                val resultSet= sqliteC.prepareStatement("select * from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
-                resultSet.next()
-                val statusindb = resultSet.getInt("vSTATE")
-                if (statusRightNow == 1 && statusindb == 0) {
-                    sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 1 WHERE \"vID\" = '$vID';").execute()
-                    RemindListener().remindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
-                } else if (statusRightNow == 0 && statusindb == 1) {
-                    sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 0 WHERE \"vID\" = '$vID';").execute()
-                }
+                call!!.enqueue(object: Callback<ResponseBody?>{
+                    override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                        if (response.body() != null) {
+                            val sqliteC: Connection = SQLFun().connection("bot")!!
+                            val body = response.body()!!.string()
+                            val data = oMapper.readValue<BilibiliDataClass>(body).data
+                            val liveRoomData = data.live_room
+                            val statusRightNow = liveRoomData.liveStatus
+                            println(vID)
+                            GlobalObject.log.debug(vID)
+                            val resultSet= sqliteC.prepareStatement("select * from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
+                            resultSet.next()
+                            val statusindb = resultSet.getInt("vSTATE")
+                            if (statusRightNow == 1 && statusindb == 0) {
+                                sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 1 WHERE \"vID\" = '$vID';").execute()
+                                RemindListener().remindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
+                            } else if (statusRightNow == 0 && statusindb == 1) {
+                                sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 0 WHERE \"vID\" = '$vID';").execute()
+                            }
+                            sqliteC.close()
+                        } else {
+                            BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(InitCheck.GROUP_ID.toLong(), "b站网络出问题了(确信")
+                        }
+                    }
+                    override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                        t.printStackTrace()
+                    }
+                })
             }
-            sqliteC.close()
             Thread.sleep(60000)
         }
     } catch (e: SQLException) {
