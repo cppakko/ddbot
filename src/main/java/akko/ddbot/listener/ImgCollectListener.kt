@@ -68,8 +68,9 @@ class ImgCollectListener : IcqListener() {
             } else {
                 val t = SQLFun().executeQuery("bot","SELECT filepath from setulist.list where message_id = '${data.message_id}';")
                 val path = t!!.resultSet.getString(1)
+                t.connection.close()
                 //jn123jn4_p0.jpg
-                val thumbnailsPath = "data/images/img_thumbnails/" + PatternHelper().regexHelper("(/setu_img/)([0-9_a-z]*)",path).group(2) + "_thumbnail" + ".jpg"
+                val thumbnailsPath = SQLFun().executeQuery("bot","SELECT thumbnailpath from setulist.list where message_id = '${data.message_id}';")!!.resultSet.getString(1)
                 println(thumbnailsPath)
                 Class.forName("org.postgresql.Driver")
                 val sqliteC = DriverManager.getConnection("jdbc:postgresql://${InitCheck.POSTGRE_URL}/bot",InitCheck.POSTGRE_USER,InitCheck.POSTGRE_PASSWD)
