@@ -15,7 +15,7 @@ import java.sql.SQLException
 class RemindListener {
     fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
         try {
-            val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("bot", "select * from listenerinfo.v$vID;")
+            val tuple = SQLFun().executeQuery("bot", "select * from listenerinfo.v$vID;")
             val res: ResultSet = tuple!!.resultSet
             val mb = MessageBuilder()
             var count = 0
@@ -27,16 +27,19 @@ class RemindListener {
                 add(url).newLine()
                 add("---------------").newLine()
             }
-            while (res.next()) {
-                mb.run {
-                    add(ComponentAt(res.getString("ID").toLong()))
-                    add(" ")
-                }
-                count++
-                if (count == 3) {
-                    mb.newLine()
-                    count = 0
-                }
+            if (res.row > 0)
+            {
+                do {
+                    mb.run {
+                        add(ComponentAt(res.getString("ID").toLong()))
+                        add(" ")
+                    }
+                    count++
+                    if (count == 3) {
+                        mb.newLine()
+                        count = 0
+                    }
+                }while (res.next())
             }
             tuple.connection.close()
             val groupId = InitCheck.GROUP_ID.toLong()
