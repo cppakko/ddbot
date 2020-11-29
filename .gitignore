@@ -7,3 +7,4 @@ target/
 akko.ddbot.iml
 src/test/
 !/.factorypath
+.factorypath
