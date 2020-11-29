@@ -3,6 +3,7 @@ package akko.ddbot
 import akko.ddbot.data.BotConfigData
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
+import org.hydev.logger.HyLogger
 import java.io.File
 import java.io.IOException
 import java.sql.DriverManager
@@ -38,7 +39,7 @@ object InitCheck {
                 botConfigData.saucenaoApiKey = ""
                 GlobalObject.objectMapper.writeValue(botXconfig, botConfigData)
 
-                GlobalObject.log.debug("请对botXconfig.json完成修改后重启 别填错了别填错了别填错了")
+                HyLogger("InstallCheck").log("请对botXconfig.json完成修改后重启 别填错了别填错了别填错了")
                 exitProcess(0)
             } catch (e: IOException) {
                 e.printStackTrace()

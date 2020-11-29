@@ -8,6 +8,7 @@ import akko.ddbot.task.LiveRoomTask
 import akko.ddbot.task.LiverInit
 import cc.moecraft.icq.PicqBotX
 import cc.moecraft.icq.PicqConfig
+import org.hydev.logger.HyLoggerConfig
 
 class BotMainActivity {
     companion object {
@@ -17,8 +18,14 @@ class BotMainActivity {
         fun main(args: Array<String>) {
             //INIT
             InitCheck.installCheck()
+            HyLoggerConfig.debug = true
             //INIT END
-            val mainConfig = PicqConfig(InitCheck.SOCKET_PORT).setDebug(true)
+            val mainConfig = PicqConfig(InitCheck.SOCKET_PORT).run {
+                isDebug = true
+                isUseAsyncCommands = true
+                isMultiAccountOptimizations = false
+                setApiAsync(true)
+            }
             mainConfig.secret = InitCheck.SECRET
             mainConfig.accessToken = InitCheck.ACCESS_TOKEN
             val mainBot = PicqBotX(mainConfig)

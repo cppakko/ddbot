@@ -17,6 +17,7 @@ import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
 import net.coobird.thumbnailator.Thumbnails
 import okhttp3.*
+import org.hydev.logger.HyLogger
 import retrofit2.Call
 import retrofit2.Retrofit
 import java.io.File
@@ -38,7 +39,7 @@ class SetuCommand : GroupCommand {
             } else {
                 return "Lolicon网络有点问题(确信"
             }
-            println(body)
+            HyLogger("SetuCommand").debug(body)
             val url = GlobalObject.objectMapper.readValue(body, LoliconApiDataClass::class.java).data!![0].url
             if (url != null) { getTask(url,group) } else { return "Lolicon网络有点问题(确信" }
         } catch (e: IOException) {

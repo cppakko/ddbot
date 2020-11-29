@@ -8,10 +8,12 @@ import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
 import com.fasterxml.jackson.module.kotlin.*
 import okhttp3.ResponseBody
+import org.hydev.logger.foreground
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.awt.Color
 import java.io.IOException
 import java.sql.Connection
 import java.sql.SQLException
@@ -33,8 +35,7 @@ val LiveRoomTask = Thread {
                             val data = oMapper.readValue<BilibiliDataClass>(body).data
                             val liveRoomData = data.live_room
                             val statusRightNow = liveRoomData.liveStatus
-                            println(vID)
-                            GlobalObject.log.debug(vID)
+                            GlobalObject.LiveRoomlog.debug("${Color(252, 168, 187).foreground()}$vID 检查完成")
                             val resultSet= sqliteC.prepareStatement("select * from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
                             resultSet.next()
                             val statusindb = resultSet.getInt("vSTATE")
