@@ -1,6 +1,6 @@
 package akko.ddbot.listener
 
-import akko.ddbot.InitCheck
+import akko.ddbot.Init
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.PatternHelper
 import akko.ddbot.utilities.getImg
@@ -35,11 +35,12 @@ class ImgCollectListener : IcqListener() {
                 if (newFile.exists()) {
                     val rawFile = "data/images/img/$fileName"
                     try {
-                        val tuple = SQLFun().executeQuery("bot", "SELECT picture_id from imgcollect.imginfo where raw_file='$rawFile';")
-                        val pictureId = tuple!!.resultSet.getInt(1)
-                        tuple.connection.close()
+                        val tuple = SQLFun().executeQuery("SELECT picture_id from imgcollect.imginfo where raw_file='$rawFile';")
+                        val pictureId = tuple!!.first.getInt(1)
+                        tuple.second.close()
                         val time = Date().time / 1000L
-                        SQLFun().execute("bot", "INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'$pictureId','$time');")
+                        //TODO SQL D
+                        SQLFun().execute("INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'$pictureId','$time');")
                     } catch (e: SQLException) {
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
@@ -54,10 +55,12 @@ class ImgCollectListener : IcqListener() {
                     val thumbnailsPath = "data/images/img_thumbnails/" + fileName + "_thumbnail" + ".jpg"
                     Thumbnails.of(path).size(800, 800).toFile(thumbnailsPath)
                     try {
-                        SQLFun().execute("bot", "INSERT INTO imgcollect.imginfo (raw_file,thumbnail) VALUES ('$path','$thumbnailsPath');")
-                        InitCheck.MAX_PICTURE_ID++
+                        //TODO SQL D
+                        SQLFun().execute("INSERT INTO imgcollect.imginfo (raw_file,thumbnail) VALUES ('$path','$thumbnailsPath');")
+                        Init.MAX_PICTURE_ID++
                         val time = Date().time / 1000L
-                        SQLFun().execute("bot", "INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'${InitCheck.MAX_PICTURE_ID}','$time');")
+                        //TODO SQL D
+                        SQLFun().execute("INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'${Init.MAX_PICTURE_ID}','$time');")
                     } catch (e: SQLException) {
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
@@ -66,23 +69,24 @@ class ImgCollectListener : IcqListener() {
                     event.respond("添加成功 yattaze")
                 }
             } else {
-                val t = SQLFun().executeQuery("bot","SELECT filepath from setulist.list where message_id = '${data.message_id}';")
-                val path = t!!.resultSet.getString(1)
-                t.connection.close()
+                val t = SQLFun().executeQuery("SELECT filepath from setulist.list where message_id = '${data.message_id}';")
+                val path = t!!.first.getString(1)
+                t.second.close()
                 //jn123jn4_p0.jpg
-                val thumbnailsPath = SQLFun().executeQuery("bot","SELECT thumbnailpath from setulist.list where message_id = '${data.message_id}';")!!.resultSet.getString(1)
-                println(thumbnailsPath)
+                val thumbnailsPath = SQLFun().executeQuery("SELECT thumbnailpath from setulist.list where message_id = '${data.message_id}';")!!.first.getString(1)
                 Class.forName("org.postgresql.Driver")
-                val sqliteC = DriverManager.getConnection("jdbc:postgresql://${InitCheck.POSTGRE_URL}/bot",InitCheck.POSTGRE_USER,InitCheck.POSTGRE_PASSWD)
+                //TODO SQL D
+                val sqliteC = DriverManager.getConnection("jdbc:postgresql://${Init.POSTGRE_URL}/bot",Init.POSTGRE_USER,Init.POSTGRE_PASSWD)
                 val res = sqliteC.prepareStatement("select picture_id from imgcollect.imginfo where thumbnail = '$thumbnailsPath';").executeQuery()
                 if (res.next()) {
                     sqliteC.close()
                     try {
-                        val tuple = SQLFun().executeQuery("bot", "SELECT imgcollect.picture_id from imginfo where thumbnail='$thumbnailsPath';")
-                        val pictureId = tuple!!.resultSet.getInt(1)
-                        tuple.connection.close()
+                        val tuple = SQLFun().executeQuery("SELECT imgcollect.picture_id from imginfo where thumbnail='$thumbnailsPath';")
+                        val pictureId = tuple!!.first.getInt(1)
+                        tuple.second.close()
                         val time = Date().time / 1000L
-                        SQLFun().execute("bot", "INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'$pictureId','$time');")
+                        //TODO SQL D
+                        SQLFun().execute("INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'$pictureId','$time');")
                     }
                     catch (e: SQLiteException) {
                         e.printStackTrace()
@@ -92,12 +96,11 @@ class ImgCollectListener : IcqListener() {
                 } else {
                     try {
                         sqliteC.close()
-                        println(6)
-                        SQLFun().execute("bot", "INSERT INTO imgcollect.imginfo (raw_file,thumbnail) VALUES ('$path','$thumbnailsPath');")
-                        InitCheck.MAX_PICTURE_ID++
+                        //TODO SQL D
+                        SQLFun().execute("INSERT INTO imgcollect.imginfo (raw_file,thumbnail) VALUES ('$path','$thumbnailsPath');")
+                        Init.MAX_PICTURE_ID++
                         val time = Date().time / 1000L
-                        println(7)
-                        SQLFun().execute("bot", "INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'${InitCheck.MAX_PICTURE_ID}','$time');")
+                        SQLFun().execute("INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'${Init.MAX_PICTURE_ID}','$time');")
                     } catch (e: SQLiteException) {
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")

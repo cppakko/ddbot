@@ -17,7 +17,9 @@ class RemoveListener : GroupCommand {
                               arg4: ArrayList<String>): String {
         val arr = arg0.getMessage().split(" ".toRegex()).toTypedArray()
         return if (arr.size == 2) {
-            SQLFun().execute("bot", "DELETE FROM listenerinfo.v" + arr[1] + " WHERE \"ID\" = '" + arg1.id + "';")
+            //TODO SQL操作检测
+            //arr[1] 主播pid            arg1.id 发送者QQ号
+            SQLFun().execute("DELETE FROM groupinfo.follow_info WHERE user_id = ${arg1.id} AND vid = (SELECT id FROM groupinfo.vliver WHERE \"vID\" = '${arr[1]}');")
             "操作成功 yattaze"
         } else {
             "ERR 输入有误"

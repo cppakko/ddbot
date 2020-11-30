@@ -1,17 +1,14 @@
 package akko.ddbot.sql
 
-import akko.ddbot.InitCheck
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.ResultSet
-import java.sql.SQLException
+import akko.ddbot.Init
+import java.sql.*
 
 class SQLFun {
-    fun execute(databaseName: String, sql: String): Boolean
+    fun execute(sql: String): Boolean
     {
         try {
             Class.forName("org.postgresql.Driver")
-            val sqliteC = DriverManager.getConnection("jdbc:postgresql://${InitCheck.POSTGRE_URL}/$databaseName",InitCheck.POSTGRE_USER,InitCheck.POSTGRE_PASSWD)
+            val sqliteC = DriverManager.getConnection("jdbc:postgresql://${Init.POSTGRE_URL}/${Init.POSTGRE_DATABASE}", Init.POSTGRE_USER, Init.POSTGRE_PASSWD)
             val res = sqliteC.prepareStatement(sql).execute()
             sqliteC.close()
             return res
@@ -24,13 +21,13 @@ class SQLFun {
         }
         return false
     }
-    fun executeQuery(databaseName: String, sql: String?): TwoTuple<ResultSet?, Connection?>? {
+    fun executeQuery(sql: String?): Pair<ResultSet, Connection>? {
         try {
             Class.forName("org.postgresql.Driver")
-            val sqliteC = DriverManager.getConnection("jdbc:postgresql://${InitCheck.POSTGRE_URL}/$databaseName",InitCheck.POSTGRE_USER,InitCheck.POSTGRE_PASSWD)
+            val sqliteC = DriverManager.getConnection("jdbc:postgresql://${Init.POSTGRE_URL}/${Init.POSTGRE_DATABASE}",Init.POSTGRE_USER,Init.POSTGRE_PASSWD)
             val res = sqliteC.prepareStatement(sql).executeQuery()
             res.next()
-            return TwoTuple(res, sqliteC)
+            return Pair<ResultSet, Connection>(res, sqliteC)
         } catch (e: ClassNotFoundException) {
             println(e.message)
             e.printStackTrace()
@@ -40,10 +37,10 @@ class SQLFun {
         }
         return null
     }
-    fun connection(databaseName: String): Connection? {
+    fun connection(): Connection? {
         try {
             Class.forName("org.postgresql.Driver")
-            return DriverManager.getConnection("jdbc:postgresql://${InitCheck.POSTGRE_URL}/$databaseName",InitCheck.POSTGRE_USER,InitCheck.POSTGRE_PASSWD)
+            return DriverManager.getConnection("jdbc:postgresql://${Init.POSTGRE_URL}/${Init.POSTGRE_DATABASE}",Init.POSTGRE_USER,Init.POSTGRE_PASSWD)
         } catch (e: ClassNotFoundException) {
             println(e.message)
             e.printStackTrace()
@@ -52,5 +49,11 @@ class SQLFun {
             e.printStackTrace()
         }
         return null
+    }
+    fun PreparedStatement(sql: String): Pair<PreparedStatement,Connection>
+    {
+        Class.forName("org.postgresql.Driver")
+        val conn = DriverManager.getConnection("jdbc:postgresql://${Init.POSTGRE_URL}/${Init.POSTGRE_DATABASE}",Init.POSTGRE_USER,Init.POSTGRE_PASSWD)
+        return Pair<PreparedStatement,Connection>(conn.prepareStatement(sql),conn)
     }
 }

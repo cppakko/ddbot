@@ -1,7 +1,6 @@
 package akko.ddbot.task
 
 import akko.ddbot.sql.SQLFun
-import akko.ddbot.sql.TwoTuple
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -13,12 +12,12 @@ class LiverInit {
         fun init() {
             liverList = LinkedList()
             try {
-                val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("bot", "SELECT * FROM groupinfo.vliver;")
-                val set: ResultSet = tuple!!.resultSet
+                val pair = SQLFun().executeQuery("SELECT * FROM groupinfo.vliver;")
+                val set: ResultSet = pair!!.first
                 while (set.next()) {
                     (liverList as LinkedList<String>).add(set.getString("vID"))
                 }
-                tuple.connection.close()
+                pair.second.close()
             } catch (e: SQLException) {
                 e.printStackTrace()
             }

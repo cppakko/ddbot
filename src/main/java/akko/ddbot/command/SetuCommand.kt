@@ -1,6 +1,6 @@
 package akko.ddbot.command
 
-import akko.ddbot.InitCheck
+import akko.ddbot.Init
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
 import akko.ddbot.network.LoliconApiNetwork
 import akko.ddbot.sql.SQLFun
@@ -30,7 +30,7 @@ import java.util.regex.Pattern
 class SetuCommand : GroupCommand {
     override fun groupMessage(eventGroupMessage: EventGroupMessage, groupUser: GroupUser, group: Group, s: String, arrayList: ArrayList<String>): String {
         val retrofit = Retrofit.Builder().baseUrl("https://api.lolicon.app/").build()
-        val call: Call<ResponseBody?>? = retrofit.create(LoliconApiNetwork::class.java)[InitCheck.LOLICON_APIKEY, "true"]
+        val call: Call<ResponseBody?>? = retrofit.create(LoliconApiNetwork::class.java)[Init.LOLICON_APIKEY, "true"]
         try {
             val body: String
             val responsebody = call?.execute()?.body()
@@ -61,7 +61,7 @@ private fun getTask(url: String,group: Group)
     val fileName = filePathMatcher.group(0)
     val filePath = "data/images/setu_img/$fileName"
     val imgFile = File(filePath)
-    if (imgFile.exists()) return onResponse("setu_img/$fileName","/img_thumbnails/" + fileName + "_thumbanil.jpg", group.id,fileName)
+    if (imgFile.exists()) return onResponse("setu_img/$fileName","/img_thumbnails/" + fileName + "_thumbnail.jpg", group.id,fileName)
     else
     {
         val client = OkHttpClient.Builder().connectTimeout(20,TimeUnit.SECONDS).readTimeout(20,TimeUnit.SECONDS).build()
@@ -85,7 +85,7 @@ private fun getTask(url: String,group: Group)
                     fos.close()
                 }
                 catch (e: IOException) { onFailure(e, group.id) }
-                onResponse("data/images/setu_img/$fileName", "data/images/img_thumbnails/" + fileName + "_thumbanil.jpg",group.id,fileName)
+                onResponse("data/images/setu_img/$fileName", "data/images/img_thumbnails/" + fileName + "_thumbnail.jpg",group.id,fileName)
             }
         })
     }
@@ -103,7 +103,7 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
     {
         Thumbnails.of(filePath).size(800,800).toFile(thumbnail_path)
     }
-    val retrunData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbanil.jpg")).toString())!!
+    val retrunData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbnail.jpg")).toString())!!
     val messageId = retrunData.data.messageId
     val status = retrunData.status
     if (status != ReturnStatus.ok)
@@ -112,13 +112,14 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
     }
     else
     {
-        SQLFun().execute("bot","INSERT INTO setulist.list VALUES('$messageId','$filePath','$thumbnail_path',${(Date().time / 1000L)});")
-        val t = SQLFun().executeQuery("bot","SELECT count(*) from setulist.list;")
-        val set = t!!.resultSet
+        SQLFun().execute("INSERT INTO setulist.list VALUES('$messageId','$filePath','$thumbnail_path',${(Date().time / 1000L)});")
+        val t = SQLFun().executeQuery("SELECT count(*) from setulist.list;")
+        val set = t!!.first
         if (set.getInt(1) > 10)
         {
-            SQLFun().execute("bot","DELETE FROM setulist.list WHERE message_id = (SELECT message_id from setulist.list WHERE sendtime = (SELECT MIN(sendtime) from setulist.list));")
+            //TODO SQL D
+            SQLFun().execute("DELETE FROM setulist.list WHERE message_id = (SELECT message_id from setulist.list WHERE sendtime = (SELECT MIN(sendtime) from setulist.list));")
         }
-        t.connection.close()
+        t.second.close()
     }
 }

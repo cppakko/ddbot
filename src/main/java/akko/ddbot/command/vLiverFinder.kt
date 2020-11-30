@@ -1,7 +1,6 @@
 package akko.ddbot.command
 
 import akko.ddbot.sql.SQLFun
-import akko.ddbot.sql.TwoTuple
 import cc.moecraft.icq.command.CommandProperties
 import cc.moecraft.icq.command.interfaces.GroupCommand
 import cc.moecraft.icq.event.events.message.EventGroupMessage
@@ -21,15 +20,15 @@ class vLiverFinder : GroupCommand {
     override fun groupMessage(arg0: EventGroupMessage, arg1: GroupUser, arg2: Group, arg3: String,
                               arg4: ArrayList<String>): String {
         return try {
-            val tuple: TwoTuple<ResultSet?, Connection?>? = SQLFun().executeQuery("bot", "SELECT * FROM groupinfo.vliver;")
-            val set: ResultSet = tuple!!.resultSet
+            val pair = SQLFun().executeQuery("SELECT * FROM groupinfo.vliver;")
+            val set: ResultSet = pair!!.first
             val mb = MessageBuilder()
             mb.add("----------").newLine()
             mb.add("uid | Name").newLine()
             while (set.next()) {
                 mb.add(set.getString("vID") + "   " + set.getString("vNAME")).newLine()
             }
-            tuple.connection.close()
+            pair.second.close()
             mb.add("----------").toString()
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()

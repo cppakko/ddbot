@@ -1,7 +1,7 @@
 package akko.ddbot.utilities
 
 import akko.ddbot.BotMainActivity
-import akko.ddbot.InitCheck
+import akko.ddbot.Init
 import akko.ddbot.data.CQImageData
 import akko.ddbot.data.GetMsgData
 import akko.ddbot.data.MsgData
@@ -22,7 +22,7 @@ fun rawGroupMsg(group_id: Long, msg: String): ReturnData<RMessageReturnData>? { 
  */
 fun getMsg(msg_id:String): MsgData
 {
-    val url = "http://0.0.0.0:5700/get_msg?message_id=" + msg_id + "&access_token=" + InitCheck.ACCESS_TOKEN
+    val url = "http://0.0.0.0:5700/get_msg?message_id=" + msg_id + "&access_token=" + Init.ACCESS_TOKEN
     val client = OkHttpClient()
     val request = Request.Builder().url(url).build()
     val call = client.newCall(request)
@@ -34,7 +34,7 @@ fun getMsg(msg_id:String): MsgData
  */
 fun ocrFun(imgFile: String): OCRdata {
     val client = OkHttpClient()
-    val ocrUrl = "http://0.0.0.0:" + InitCheck.POST_PORT.toString() + "/.ocr_image?image=" + imgFile + "&access_token=" + InitCheck.ACCESS_TOKEN
+    val ocrUrl = "http://0.0.0.0:" + Init.POST_PORT.toString() + "/.ocr_image?image=" + imgFile + "&access_token=" + Init.ACCESS_TOKEN
     val requestOcr = Request.Builder().url(ocrUrl).build()
     val responseBodyCall = client.newCall(requestOcr)
     val jsBody = responseBodyCall.execute().body()!!.string()
@@ -55,7 +55,7 @@ fun ocrFun(imgFile: String): OCRdata {
 
 fun getImg(image_id: String): CQImageData
 {
-    val url = "http://0.0.0.0:" + InitCheck.POST_PORT.toString() + "/get_image?file=" + image_id + "&access_token=" + InitCheck.ACCESS_TOKEN
+    val url = "http://0.0.0.0:" + Init.POST_PORT.toString() + "/get_image?file=" + image_id + "&access_token=" + Init.ACCESS_TOKEN
     val client = OkHttpClient()
     val request = Request.Builder().url(url).build()
     val call = client.newCall(request)

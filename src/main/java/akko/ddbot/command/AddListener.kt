@@ -17,7 +17,8 @@ class AddListener : GroupCommand {
                               arg4: ArrayList<String>): String {
         val arr = arg0.getMessage().split(" ".toRegex()).toTypedArray()
         return if (arr.size == 2) {
-            SQLFun().execute("bot", "INSERT INTO listenerinfo.v" + arr[1] + " VALUES('" + arg1.id + "');")
+            // arg1.id 发送者QQ号         arr[1]主播pid
+            SQLFun().execute("INSERT INTO groupinfo.follow_info VALUES(${arg1.id},(SELECT \"id\" FROM groupinfo.vliver WHERE vliver.\"vID\" = '${arr[1]}'));")
             "操作成功 yattaze"
         } else {
             "ERR 输入有误"

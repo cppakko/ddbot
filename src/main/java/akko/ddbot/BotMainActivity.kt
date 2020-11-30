@@ -17,19 +17,19 @@ class BotMainActivity {
         @JvmStatic
         fun main(args: Array<String>) {
             //INIT
-            InitCheck.installCheck()
+            Init.installCheck()
             HyLoggerConfig.debug = true
             //INIT END
-            val mainConfig = PicqConfig(InitCheck.SOCKET_PORT).run {
+            val mainConfig = PicqConfig(Init.SOCKET_PORT).run {
                 isDebug = true
                 isUseAsyncCommands = true
                 isMultiAccountOptimizations = false
                 setApiAsync(true)
             }
-            mainConfig.secret = InitCheck.SECRET
-            mainConfig.accessToken = InitCheck.ACCESS_TOKEN
+            mainConfig.secret = Init.SECRET
+            mainConfig.accessToken = Init.ACCESS_TOKEN
             val mainBot = PicqBotX(mainConfig)
-            mainBot.addAccount("mainBot", "0.0.0.0", InitCheck.POST_PORT)
+            mainBot.addAccount("mainBot", "0.0.0.0", Init.POST_PORT)
             mainBot.enableCommandManager("!", "bot -")
 
             mainBot.eventManager.registerListeners(

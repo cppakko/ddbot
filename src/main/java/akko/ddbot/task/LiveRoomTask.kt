@@ -1,7 +1,7 @@
 package akko.ddbot.task
 
 import akko.ddbot.BotMainActivity
-import akko.ddbot.InitCheck
+import akko.ddbot.Init
 import akko.ddbot.data.BilibiliApi.BilibiliDataClass
 import akko.ddbot.network.BilibiliApiService
 import akko.ddbot.sql.SQLFun
@@ -30,7 +30,7 @@ val LiveRoomTask = Thread {
                 call!!.enqueue(object: Callback<ResponseBody?>{
                     override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                         if (response.body() != null) {
-                            val sqliteC: Connection = SQLFun().connection("bot")!!
+                            val sqliteC: Connection = SQLFun().connection()!!
                             val body = response.body()!!.string()
                             val data = oMapper.readValue<BilibiliDataClass>(body).data
                             val liveRoomData = data.live_room
@@ -47,7 +47,7 @@ val LiveRoomTask = Thread {
                             }
                             sqliteC.close()
                         } else {
-                            BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(InitCheck.GROUP_ID.toLong(), "b站网络出问题了(确信")
+                            BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(Init.GROUP_ID.toLong(), "b站网络出问题了(确信")
                         }
                     }
                     override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {

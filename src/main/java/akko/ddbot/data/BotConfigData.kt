@@ -42,4 +42,7 @@ class BotConfigData {
 
     @JsonProperty("postgre_url")
     var postgreUrl:String? = null
+
+    @JsonProperty("postgre_database")
+    var postgreDatabase:String? = null
 }

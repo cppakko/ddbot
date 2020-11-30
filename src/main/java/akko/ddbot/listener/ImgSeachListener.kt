@@ -1,8 +1,6 @@
 package akko.ddbot.listener
 
-import akko.ddbot.InitCheck
-import akko.ddbot.data.CQImageData
-import akko.ddbot.data.GetMsgData
+import akko.ddbot.Init
 import akko.ddbot.network.SaucenaoApiService
 import akko.ddbot.utilities.*
 import cc.moecraft.icq.event.EventHandler
@@ -10,7 +8,6 @@ import cc.moecraft.icq.event.IcqListener
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.sender.message.MessageBuilder
 import cc.moecraft.icq.sender.message.components.ComponentImage
-import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.*
@@ -40,7 +37,7 @@ class ImgSeachListener : IcqListener() {
                             if (imgM.find()) {
                                 val imgQqUrl = getImg(imgM.group(2)).data.url
                                 val retrofit = Retrofit.Builder().baseUrl("https://saucenao.com/").build()
-                                retrofit.create(SaucenaoApiService::class.java)[999, 2, 1, 1, imgQqUrl, InitCheck.SAUCENAO_API_KEY]?.enqueue(object: retrofit2.Callback<ResponseBody?> {
+                                retrofit.create(SaucenaoApiService::class.java)[999, 2, 1, 1, imgQqUrl, Init.SAUCENAO_API_KEY]?.enqueue(object: retrofit2.Callback<ResponseBody?> {
                                     override fun onResponse(call: retrofit2.Call<ResponseBody?>, response: retrofit2.Response<ResponseBody?>) {
                                         val searchBody = response.body()!!.string()
                                         val result = SauceHelper.extract(searchBody,1)[0]
@@ -61,7 +58,7 @@ class ImgSeachListener : IcqListener() {
                                         groupMsg(event.groupId,builder.toString())
                                     }
                                     override fun onFailure(call: retrofit2.Call<ResponseBody?>, t: Throwable) {
-                                        groupMsg(InitCheck.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+                                        groupMsg(Init.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
                                     }
                                 })
                             }

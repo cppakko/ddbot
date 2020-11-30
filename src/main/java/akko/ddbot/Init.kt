@@ -9,7 +9,7 @@ import java.io.IOException
 import java.sql.DriverManager
 import kotlin.system.exitProcess
 
-object InitCheck {
+object Init {
     var GROUP_ID = 0
     var ACCESS_TOKEN: String? = null
     var SECRET: String? = null
@@ -23,6 +23,8 @@ object InitCheck {
     var POSTGRE_USER:String? = null
     var POSTGRE_PASSWD:String? = null
     var POSTGRE_URL:String? = null
+    var POSTGRE_DATABASE:String? = null
+
     fun installCheck() {
         val isInstalled = File(".isInstalled")
         val botXconfig = File("botXconfig.json")
@@ -59,8 +61,9 @@ object InitCheck {
                 POSTGRE_PASSWD = botConfigData.postgrePasswd
                 POSTGRE_URL = botConfigData.postgreUrl
                 POSTGRE_USER = botConfigData.postgreUser
+                POSTGRE_DATABASE = botConfigData.postgreDatabase
 
-                MAX_PICTURE_ID = SQLFun().executeQuery("bot","select max(picture_id) from imgcollect.imginfo;")!!.resultSet.getLong(1)
+                MAX_PICTURE_ID = SQLFun().executeQuery("select max(picture_id) from imgcollect.imginfo;")!!.first.getLong(1)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

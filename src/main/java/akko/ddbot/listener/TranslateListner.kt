@@ -1,6 +1,6 @@
 package akko.ddbot.listener
 
-import akko.ddbot.InitCheck
+import akko.ddbot.Init
 import akko.ddbot.data.TranslateData.TranslateData
 import akko.ddbot.utilities.GlobalObject
 import akko.ddbot.utilities.getMsg
@@ -32,25 +32,18 @@ class TranslateListener : IcqListener() {
                         pattern = Pattern.compile("(file=)([0-9a-z.]*)")
                         val rowMessage = getMsg(messageId).message
                         val imgM = pattern.matcher(rowMessage)
-                        val transApi = TransApi(InitCheck.BAIDU_APP_ID!!, InitCheck.BAIDU_SECURITY_KEY!!)
+                        val transApi = TransApi(Init.BAIDU_APP_ID!!, Init.BAIDU_SECURITY_KEY!!)
                         val mb = MessageBuilder()
                         if (imgM.find())
                         {
                             val data = ocrFun(imgM.group(2).toString()).data!!
                             val language = data.language
                             val textsList = data.texts!!
-                            if ("zh" == language) {
-                                for (t in textsList) {
-                                    mb.add(t.text)
-                                    mb.newLine()
-                                }
-                            } else {
-                                for (t in textsList) {
-                                    val transJS = transApi.getTransResult(t.text!!, "auto", "zh")
-                                    val unicode = GlobalObject.objectMapper.readValue(transJS, TranslateData::class.java).transResult!![0].dst
-                                    mb.add(unicode)
-                                    mb.newLine()
-                                }
+                            for (t in textsList) {
+                                val transJS = transApi.getTransResult(t.text!!, "auto", "zh")
+                                val unicode = GlobalObject.objectMapper.readValue(transJS, TranslateData::class.java).transResult!![0].dst
+                                mb.add(unicode)
+                                mb.newLine()
                             }
                         }
                         else
