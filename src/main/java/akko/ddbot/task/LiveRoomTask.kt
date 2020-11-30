@@ -6,6 +6,7 @@ import akko.ddbot.data.BilibiliApi.BilibiliDataClass
 import akko.ddbot.network.BilibiliApiService
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
+import akko.ddbot.utilities.groupMsg
 import com.fasterxml.jackson.module.kotlin.*
 import okhttp3.ResponseBody
 import org.hydev.logger.foreground
@@ -41,13 +42,13 @@ val LiveRoomTask = Thread {
                             val statusindb = resultSet.getInt(1)
                             if (statusRightNow == 1 && statusindb == 0) {
                                 sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 1 WHERE \"vID\" = '$vID';").execute()
-                                RemindListener().remindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
+                                remindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
                             } else if (statusRightNow == 0 && statusindb == 1) {
                                 sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 0 WHERE \"vID\" = '$vID';").execute()
                             }
                             sqliteC.close()
                         } else {
-                            BotMainActivity.bot!!.accountManager.nonAccountSpecifiedApi.sendGroupMsg(Init.GROUP_ID.toLong(), "b站网络出问题了(确信")
+                            groupMsg(Init.GROUP_ID.toLong(), "b站网络出问题了(确信")
                         }
                     }
                     override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {

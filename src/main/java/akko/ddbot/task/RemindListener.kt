@@ -10,51 +10,48 @@ import cc.moecraft.icq.sender.returndata.ReturnStatus
 import java.sql.ResultSet
 import java.sql.SQLException
 
-class RemindListener {
-    fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
-        try {
-            val tuple = SQLFun().executeQuery("SELECT user_id FROM groupinfo.follow_info WHERE vid = (SELECT id FROM groupinfo.vliver WHERE \"vID\" = '${vID}')")
-            val res: ResultSet = tuple!!.first
-            val mb = MessageBuilder()
-            var count = 0
-            mb.run {
-                add("$vNAME 开播力~").newLine()
-                add("---------------").newLine()
-                add(ComponentImage(cover))
-                add(title).newLine()
-                add(url).newLine()
-                add("---------------").newLine()
-            }
-            if (res.row > 0)
-            {
-                do {
-                    mb.run {
-                        add(ComponentAt(res.getString("user_id").toLong()))
-                        add(" ")
-                    }
-                    count++
-                    if (count == 3) {
-                        mb.newLine()
-                        count = 0
-                    }
-                }while (res.next())
-            }
-            tuple.second.close()
-            val groupId = Init.GROUP_ID.toLong()
-            var rStatus = groupMsg(groupId, mb.toString())
-            var retryCount = 0
-            while (rStatus != ReturnStatus.ok && retryCount <= 5) {
-                if (retryCount == 5) {
-                    groupMsg(groupId, "重试了五次也没发出来  饶了我吧(哭")
-                    groupMsg(Init.GROUP_ID.toLong(),MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
-                    break
-                }
-                rStatus = groupMsg(groupId, mb.toString())
-                retryCount++
-            }
-        } catch (e: SQLException) {
-            println(e.message)
-            e.printStackTrace()
+fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
+    try {
+        val tuple = SQLFun().executeQuery("SELECT user_id FROM groupinfo.follow_info WHERE vid = (SELECT id FROM groupinfo.vliver WHERE \"vID\" = '${vID}')")
+        val res: ResultSet = tuple!!.first
+        val mb = MessageBuilder()
+        var count = 0
+        mb.run {
+            add("$vNAME 开播力~").newLine()
+            add("---------------").newLine()
+            add(ComponentImage(cover))
+            add(title).newLine()
+            add(url).newLine()
+            add("---------------").newLine()
         }
+        if (res.row > 0) {
+            do {
+                mb.run {
+                    add(ComponentAt(res.getString("user_id").toLong()))
+                    add(" ")
+                }
+                count++
+                if (count == 3) {
+                    mb.newLine()
+                    count = 0
+                }
+            } while (res.next())
+        }
+        tuple.second.close()
+        val groupId = Init.GROUP_ID.toLong()
+        var rStatus = groupMsg(groupId, mb.toString())
+        var retryCount = 0
+        while (rStatus != ReturnStatus.ok && retryCount <= 5) {
+            if (retryCount == 5) {
+                groupMsg(groupId, "重试了五次也没发出来  饶了我吧(哭")
+                groupMsg(Init.GROUP_ID.toLong(), MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
+                break
+            }
+            rStatus = groupMsg(groupId, mb.toString())
+            retryCount++
+        }
+    } catch (e: SQLException) {
+        println(e.message)
+        e.printStackTrace()
     }
 }
