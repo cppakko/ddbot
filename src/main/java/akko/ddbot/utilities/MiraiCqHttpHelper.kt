@@ -38,6 +38,7 @@ fun ocrFun(imgFile: String): OCRdata {
     val requestOcr = Request.Builder().url(ocrUrl).build()
     val responseBodyCall = client.newCall(requestOcr)
     val jsBody = responseBodyCall.execute().body()!!.string()
+    //TODO F D
     return GlobalObject.objectMapper.readValue(jsBody, OCRdata::class.java)!!
 }
 
