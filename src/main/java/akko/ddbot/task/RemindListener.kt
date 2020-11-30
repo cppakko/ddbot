@@ -13,7 +13,7 @@ import java.sql.SQLException
 class RemindListener {
     fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
         try {
-            val tuple = SQLFun().executeQuery("select * from listenerinfo.v$vID;")
+            val tuple = SQLFun().executeQuery("SELECT user_id FROM groupinfo.follow_info WHERE vid = (SELECT id FROM groupinfo.vliver WHERE \"vID\" = '${vID}')")
             val res: ResultSet = tuple!!.first
             val mb = MessageBuilder()
             var count = 0
@@ -29,7 +29,7 @@ class RemindListener {
             {
                 do {
                     mb.run {
-                        add(ComponentAt(res.getString("ID").toLong()))
+                        add(ComponentAt(res.getString("user_id").toLong()))
                         add(" ")
                     }
                     count++

@@ -14,9 +14,9 @@ class LiverInit {
             try {
                 val pair = SQLFun().executeQuery("SELECT * FROM groupinfo.vliver;")
                 val set: ResultSet = pair!!.first
-                while (set.next()) {
+                do {
                     (liverList as LinkedList<String>).add(set.getString("vID"))
-                }
+                } while (set.next())
                 pair.second.close()
             } catch (e: SQLException) {
                 e.printStackTrace()

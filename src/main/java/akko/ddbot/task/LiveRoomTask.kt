@@ -35,10 +35,10 @@ val LiveRoomTask = Thread {
                             val data = oMapper.readValue<BilibiliDataClass>(body).data
                             val liveRoomData = data.live_room
                             val statusRightNow = liveRoomData.liveStatus
-                            GlobalObject.LiveRoomlog.debug("${Color(252, 168, 187).foreground()}$vID 检查完成")
-                            val resultSet= sqliteC.prepareStatement("select * from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
+                            GlobalObject.LiveRoomlog.debug("$vID 检查完成")
+                            val resultSet= sqliteC.prepareStatement("select \"vSTATE\" from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
                             resultSet.next()
-                            val statusindb = resultSet.getInt("vSTATE")
+                            val statusindb = resultSet.getInt(1)
                             if (statusRightNow == 1 && statusindb == 0) {
                                 sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 1 WHERE \"vID\" = '$vID';").execute()
                                 RemindListener().remindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
