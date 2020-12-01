@@ -1,5 +1,6 @@
 package akko.ddbot.task
 
+import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.groupMsg
@@ -51,7 +52,6 @@ fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?
             retryCount++
         }
     } catch (e: SQLException) {
-        println(e.message)
-        e.printStackTrace()
+        BotMainActivity.ExceptionLogger!!.debug(e.message)
     }
 }

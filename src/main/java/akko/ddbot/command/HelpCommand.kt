@@ -27,6 +27,7 @@ class HelpCommand : GroupCommand {
             add(" 对图片回复 NAONAO 就会给你NAO一下(大嘘 ").newLine()
             add(" 对图片回复 这个好 就...").newLine()
             add(" 输入!dice help获取dice帮助").newLine()
+            add(" 发送#reboot来重启机器人")
             add("----------").toString()
         }
     }

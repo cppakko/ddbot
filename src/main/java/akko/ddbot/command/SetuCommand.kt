@@ -1,5 +1,6 @@
 package akko.ddbot.command
 
+import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
 import akko.ddbot.network.LoliconApiNetwork
@@ -40,9 +41,12 @@ class SetuCommand : GroupCommand {
                 return "Lolicon网络有点问题(确信"
             }
             HyLogger("SetuCommand").debug(body)
-            val url = GlobalObject.objectMapper.readValue(body, LoliconApiDataClass::class.java).data!![0].url
-            if (url != null) { getTask(url,group) } else { return "Lolicon网络有点问题(确信" }
+            val data = GlobalObject.objectMapper.readValue(body, LoliconApiDataClass::class.java).data!![0]
+            val url = data.url
+            val author = data.author!!
+            if (url != null) { getTask(author,url,group) } else { return "Lolicon网络有点问题(确信" }
         } catch (e: IOException) {
+            BotMainActivity.ExceptionLogger!!.debug(e.message)
             e.printStackTrace()
             return e.message!!
         }
@@ -54,14 +58,14 @@ class SetuCommand : GroupCommand {
     }
 }
 
-private fun getTask(url: String,group: Group)
+private fun getTask(author:String,url: String,group: Group)
 {
     val filePathMatcher = Pattern.compile("[0-9a-z._]*\$").matcher(url)
     filePathMatcher.find()
     val fileName = filePathMatcher.group(0)
     val filePath = "data/images/setu_img/$fileName"
     val imgFile = File(filePath)
-    if (imgFile.exists()) return onResponse("setu_img/$fileName","/img_thumbnails/" + fileName + "_thumbnail.jpg", group.id,fileName)
+    if (imgFile.exists()) return onResponse("setu_img/$fileName","/img_thumbnails/" + fileName + "_thumbnail.jpg", group.id,fileName,null,null)
     else
     {
         val client = OkHttpClient.Builder().connectTimeout(20,TimeUnit.SECONDS).readTimeout(20,TimeUnit.SECONDS).build()
@@ -83,9 +87,8 @@ private fun getTask(url: String,group: Group)
                     }
                     fos.flush()
                     fos.close()
-                }
-                catch (e: IOException) { onFailure(e, group.id) }
-                onResponse("data/images/setu_img/$fileName", "data/images/img_thumbnails/" + fileName + "_thumbnail.jpg",group.id,fileName)
+                }catch (e: IOException) { onFailure(e, group.id) }
+                onResponse("data/images/setu_img/$fileName", "data/images/img_thumbnails/" + fileName + "_thumbnail.jpg",group.id,fileName,author,url)
             }
         })
     }
@@ -93,11 +96,12 @@ private fun getTask(url: String,group: Group)
 
 private fun onFailure(e: IOException,group_id: Long)
 {
+    BotMainActivity.ExceptionLogger!!.debug(e.message)
     groupMsg(group_id,e.message!!)
     groupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
 }
 
-private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fileName: String)
+private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fileName: String,author: String?,url: String?)
 {
     if (!File(thumbnail_path).exists())
     {
@@ -112,6 +116,10 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
     }
     else
     {
+        if (author != null && url != null)
+        {
+            rawGroupMsg(group_id,"$author $url")
+        }
         SQLFun().execute("INSERT INTO setulist.list VALUES('$messageId','$filePath','$thumbnail_path',${(Date().time / 1000L)});")
         val t = SQLFun().executeQuery("SELECT count(*) from setulist.list;")
         val set = t!!.first

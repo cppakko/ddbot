@@ -1,5 +1,6 @@
 package akko.ddbot.listener
 
+import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import akko.ddbot.network.SaucenaoApiService
 import akko.ddbot.utilities.*
@@ -63,6 +64,7 @@ class ImgSeachListener : IcqListener() {
                                 })
                             }
                         } catch (e: IOException) {
+                            BotMainActivity.ExceptionLogger!!.debug(e.message)
                             event.respond(e.message)
                             e.printStackTrace()
                         }

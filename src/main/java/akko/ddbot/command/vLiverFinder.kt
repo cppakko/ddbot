@@ -1,5 +1,6 @@
 package akko.ddbot.command
 
+import akko.ddbot.BotMainActivity
 import akko.ddbot.sql.SQLFun
 import cc.moecraft.icq.command.CommandProperties
 import cc.moecraft.icq.command.interfaces.GroupCommand
@@ -31,9 +32,11 @@ class vLiverFinder : GroupCommand {
             pair.second.close()
             mb.add("----------").toString()
         } catch (e: ClassNotFoundException) {
+            BotMainActivity.ExceptionLogger!!.debug(e.message)
             e.printStackTrace()
             e.message!!
         } catch (e: SQLException) {
+            BotMainActivity.ExceptionLogger!!.debug(e.message)
             e.printStackTrace()
             e.message!!
         }

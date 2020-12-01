@@ -1,5 +1,6 @@
 package akko.ddbot.listener
 
+import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.PatternHelper
@@ -42,6 +43,7 @@ class ImgCollectListener : IcqListener() {
                         //TODO SQL D
                         SQLFun().execute("INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'$pictureId','$time');")
                     } catch (e: SQLException) {
+                        BotMainActivity.ExceptionLogger!!.debug(e.message)
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
                         return
@@ -62,6 +64,7 @@ class ImgCollectListener : IcqListener() {
                         //TODO SQL D
                         SQLFun().execute("INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'${Init.MAX_PICTURE_ID}','$time');")
                     } catch (e: SQLException) {
+                        BotMainActivity.ExceptionLogger!!.debug(e.message)
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
                         return
@@ -89,6 +92,7 @@ class ImgCollectListener : IcqListener() {
                         SQLFun().execute("INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'$pictureId','$time');")
                     }
                     catch (e: SQLiteException) {
+                        BotMainActivity.ExceptionLogger!!.debug(e.message)
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
                         return
@@ -102,6 +106,7 @@ class ImgCollectListener : IcqListener() {
                         val time = Date().time / 1000L
                         SQLFun().execute("INSERT INTO imgcollect.collectinfo VALUES (${event.senderId},'${Init.MAX_PICTURE_ID}','$time');")
                     } catch (e: SQLiteException) {
+                        BotMainActivity.ExceptionLogger!!.debug(e.message)
                         e.printStackTrace()
                         event.respond("失敗した失敗した失敗した失敗した失敗した失敗した")
                         return

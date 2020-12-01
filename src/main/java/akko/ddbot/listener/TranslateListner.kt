@@ -1,5 +1,6 @@
 package akko.ddbot.listener
 
+import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import akko.ddbot.data.TranslateData.TranslateData
 import akko.ddbot.utilities.GlobalObject
@@ -55,6 +56,7 @@ class TranslateListener : IcqListener() {
                         }
                         event.respond(mb.toString())
                     } catch (e: IOException) {
+                        BotMainActivity.ExceptionLogger!!.debug(e.message)
                         event.respond(e.message)
                         e.printStackTrace()
                     }

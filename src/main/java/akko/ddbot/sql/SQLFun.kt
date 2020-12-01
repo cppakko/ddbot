@@ -1,5 +1,6 @@
 package akko.ddbot.sql
 
+import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import java.sql.*
 
@@ -13,11 +14,9 @@ class SQLFun {
             sqliteC.close()
             return res
         } catch (e: ClassNotFoundException) {
-            println(e.message)
-            e.printStackTrace()
+            BotMainActivity.SQLLogger!!.debug(e.message)
         } catch (e: SQLException) {
-            println(e.message)
-            e.printStackTrace()
+            BotMainActivity.SQLLogger!!.debug(e.message)
         }
         return false
     }
@@ -29,11 +28,9 @@ class SQLFun {
             res.next()
             return Pair<ResultSet, Connection>(res, sqliteC)
         } catch (e: ClassNotFoundException) {
-            println(e.message)
-            e.printStackTrace()
+            BotMainActivity.SQLLogger!!.debug(e.message)
         } catch (e: SQLException) {
-            println(e.message)
-            e.printStackTrace()
+            BotMainActivity.SQLLogger!!.debug(e.message)
         }
         return null
     }
@@ -42,11 +39,9 @@ class SQLFun {
             Class.forName("org.postgresql.Driver")
             return DriverManager.getConnection("jdbc:postgresql://${Init.POSTGRE_URL}/${Init.POSTGRE_DATABASE}",Init.POSTGRE_USER,Init.POSTGRE_PASSWD)
         } catch (e: ClassNotFoundException) {
-            println(e.message)
-            e.printStackTrace()
+            BotMainActivity.SQLLogger!!.debug(e.message)
         } catch (e: SQLException) {
-            println(e.message)
-            e.printStackTrace()
+            BotMainActivity.SQLLogger!!.debug(e.message)
         }
         return null
     }

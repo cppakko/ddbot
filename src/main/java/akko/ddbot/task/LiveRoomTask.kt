@@ -36,7 +36,7 @@ val LiveRoomTask = Thread {
                             val data = oMapper.readValue<BilibiliDataClass>(body).data
                             val liveRoomData = data.live_room
                             val statusRightNow = liveRoomData.liveStatus
-                            GlobalObject.LiveRoomlog.debug("$vID 检查完成")
+                            BotMainActivity.LiveRoomLogger!!.debug("$vID 检查完成")
                             val resultSet= sqliteC.prepareStatement("select \"vSTATE\" from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
                             resultSet.next()
                             val statusindb = resultSet.getInt(1)
@@ -59,13 +59,10 @@ val LiveRoomTask = Thread {
             Thread.sleep(60000)
         }
     } catch (e: SQLException) {
-        println(e.toString())
-        e.printStackTrace()
+        BotMainActivity.ExceptionLogger!!.debug(e.message)
     } catch (e: InterruptedException) {
-        println(e.toString())
-        e.printStackTrace()
+        BotMainActivity.ExceptionLogger!!.debug(e.message)
     } catch (e: IOException) {
-        println(e.toString())
-        e.printStackTrace()
+        BotMainActivity.ExceptionLogger!!.debug(e.message)
     }
 }

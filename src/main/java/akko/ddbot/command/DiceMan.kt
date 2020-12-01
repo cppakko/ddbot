@@ -1,5 +1,6 @@
 package akko.ddbot.command
 
+import akko.ddbot.BotMainActivity
 import cc.moecraft.icq.command.CommandProperties
 import cc.moecraft.icq.command.interfaces.GroupCommand
 import cc.moecraft.icq.event.events.message.EventGroupMessage
@@ -90,6 +91,7 @@ class DiceMan : GroupCommand {
                 msgBuilder.add("结果：$value")
                 msgBuilder.toString()
             } catch (e: Exception) {
+                BotMainActivity.ExceptionLogger!!.debug(e.message)
                 "啊这，骰子man坏了：" + e.message
             }
         } else {
