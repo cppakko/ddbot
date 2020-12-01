@@ -47,15 +47,22 @@ class DiceMan : GroupCommand {
                         fixSum += fix
                     } else {
                         val diceCount = segSep[0].toInt()
+                        val shouldList = diceCount <= 50
                         val diceType = segSep[1].toInt()
                         var diceVal = 0
                         var diceStr = "[ "
                         for (i in 0 until diceCount) {
                             val curDice = random.nextInt(diceType) + 1
-                            diceStr += "$curDice, "
-                            diceVal += curDice
+                            if (shouldList) {
+                                diceStr += "$curDice, "
+                                diceVal += curDice
+                            }
                         }
-                        val detail = diceStr.trim().trimEnd(',') + "]"
+                        val detail = if (shouldList) {
+                            diceStr.trim().trimEnd(',') + "]"
+                        } else {
+                            "[太多不写]"
+                        }
                         value += diceVal
                         val sb = StringBuilder()
                         val newline = System.lineSeparator()
@@ -93,7 +100,7 @@ class DiceMan : GroupCommand {
     private fun helpInfo(): String {
         return MessageBuilder()
                 .add("------DiceMan------").newLine()
-                .add("ver 2020.11.24_02").newLine()
+                .add("ver 2020.12.01_01").newLine()
                 .add("dice roll {param}").newLine()
                 .add("d roll {param}").newLine()
                 .add("(暂时只有一个这一个roll子命令）").newLine()
