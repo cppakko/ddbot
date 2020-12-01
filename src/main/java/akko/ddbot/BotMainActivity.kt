@@ -17,7 +17,7 @@ import org.hydev.logger.HyLoggerConfig
 class BotMainActivity {
     companion object {
         var bot: PicqBotX? = null
-        var LiveRoomLogger:HyLogger? = null
+        var NLogger:HyLogger? = null
         var SQLLogger:HyLogger? = null
         var ExceptionLogger:HyLogger? = null
         //MAIN
@@ -30,7 +30,7 @@ class BotMainActivity {
             // 日志管理器
             val loggerInstanceManager = LoggerInstanceManager()
             loggerInstanceManager.addEnvironment(FileEnv("logs", "ddbot"))
-            LiveRoomLogger = loggerInstanceManager.getLoggerInstance("LiveRoomTask",true)
+            NLogger = loggerInstanceManager.getLoggerInstance("LiveRoomTask",true)
             SQLLogger = loggerInstanceManager.getLoggerInstance("SQL",true)
             ExceptionLogger = loggerInstanceManager.getLoggerInstance("Exception",true)
             //INIT END

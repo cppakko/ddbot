@@ -40,7 +40,7 @@ class SetuCommand : GroupCommand {
             } else {
                 return "Lolicon网络有点问题(确信"
             }
-            HyLogger("SetuCommand").debug(body)
+            BotMainActivity.NLogger!!.log(body)
             val data = GlobalObject.objectMapper.readValue(body, LoliconApiDataClass::class.java).data!![0]
             val url = data.url
             val author = data.author!!
