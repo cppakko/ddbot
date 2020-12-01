@@ -55,8 +55,8 @@ class DiceMan : GroupCommand {
                             val curDice = random.nextInt(diceType) + 1
                             if (shouldList) {
                                 diceStr += "$curDice, "
-                                diceVal += curDice
                             }
+                            diceVal += curDice
                         }
                         val detail = if (shouldList) {
                             diceStr.trim().trimEnd(',') + "]"
