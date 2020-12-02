@@ -92,6 +92,7 @@ class DiceMan : GroupCommand {
                 msgBuilder.toString()
             } catch (e: Exception) {
                 BotMainActivity.ExceptionLogger!!.debug(e.message)
+                e.printStackTrace()
                 "啊这，骰子man坏了：" + e.message
             }
         } else {

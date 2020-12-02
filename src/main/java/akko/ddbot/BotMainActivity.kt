@@ -1,7 +1,6 @@
 package akko.ddbot
 
 import akko.ddbot.command.*
-import akko.ddbot.data.BilibiliApi.LiveRoom
 import akko.ddbot.listener.ImgCollectListener
 import akko.ddbot.listener.ImgSeachListener
 import akko.ddbot.listener.TranslateListener

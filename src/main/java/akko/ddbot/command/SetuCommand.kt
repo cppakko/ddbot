@@ -13,9 +13,12 @@ import cc.moecraft.icq.command.interfaces.GroupCommand
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.sender.message.MessageBuilder
 import cc.moecraft.icq.sender.message.components.ComponentImage
+import cc.moecraft.icq.sender.returndata.ReturnData
 import cc.moecraft.icq.sender.returndata.ReturnStatus
+import cc.moecraft.icq.sender.returndata.returnpojo.send.RMessageReturnData
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
+import cn.hutool.http.HttpException
 import net.coobird.thumbnailator.Thumbnails
 import okhttp3.*
 import org.hydev.logger.HyLogger
@@ -97,6 +100,7 @@ private fun getTask(author:String,url: String,group: Group)
 private fun onFailure(e: IOException,group_id: Long)
 {
     BotMainActivity.ExceptionLogger!!.debug(e.message)
+    e.printStackTrace()
     groupMsg(group_id,e.message!!)
     groupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())
 }
@@ -107,9 +111,18 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
     {
         Thumbnails.of(filePath).size(800,800).toFile(thumbnail_path)
     }
-    val retrunData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbnail.jpg")).toString())!!
-    val messageId = retrunData.data.messageId
-    val status = retrunData.status
+    var returnData: ReturnData<RMessageReturnData>? = null
+    try {
+        returnData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbnail.jpg")).toString())!!
+    }
+    catch (e: HttpException)
+    {
+        groupMsg(Init.GROUP_ID.toLong(), MessageBuilder().add("被风控力").newLine().add(ComponentImage("amamiya_err.jpg")).toString())
+        return
+    }
+    val messageId = returnData.data.messageId
+    println(returnData.returnCode)
+    val status = returnData.status
     if (status != ReturnStatus.ok)
     {
         groupMsg(group_id,MessageBuilder().add(ComponentImage("amamiya_err.jpg")).toString())

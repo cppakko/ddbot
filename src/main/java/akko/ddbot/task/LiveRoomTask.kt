@@ -37,6 +37,7 @@ val LiveRoomTask = Thread {
                             val liveRoomData = data.live_room
                             val statusRightNow = liveRoomData.liveStatus
                             BotMainActivity.NLogger!!.log("$vID 检查完成")
+                            println(vID)
                             val resultSet= sqliteC.prepareStatement("select \"vSTATE\" from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
                             resultSet.next()
                             val statusindb = resultSet.getInt(1)
@@ -60,9 +61,12 @@ val LiveRoomTask = Thread {
         }
     } catch (e: SQLException) {
         BotMainActivity.ExceptionLogger!!.debug(e.message)
+        e.printStackTrace()
     } catch (e: InterruptedException) {
         BotMainActivity.ExceptionLogger!!.debug(e.message)
+        e.printStackTrace()
     } catch (e: IOException) {
         BotMainActivity.ExceptionLogger!!.debug(e.message)
+        e.printStackTrace()
     }
 }
