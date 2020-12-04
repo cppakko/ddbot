@@ -3,7 +3,7 @@ package akko.ddbot.command
 import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
-import akko.ddbot.network.LoliconApiNetwork
+import akko.ddbot.network.LoliconApiService
 import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
 import akko.ddbot.utilities.groupMsg
@@ -21,7 +21,6 @@ import cc.moecraft.icq.user.GroupUser
 import cn.hutool.http.HttpException
 import net.coobird.thumbnailator.Thumbnails
 import okhttp3.*
-import org.hydev.logger.HyLogger
 import retrofit2.Call
 import retrofit2.Retrofit
 import java.io.File
@@ -34,7 +33,7 @@ import java.util.regex.Pattern
 class SetuCommand : GroupCommand {
     override fun groupMessage(eventGroupMessage: EventGroupMessage, groupUser: GroupUser, group: Group, s: String, arrayList: ArrayList<String>): String {
         val retrofit = Retrofit.Builder().baseUrl("https://api.lolicon.app/").build()
-        val call: Call<ResponseBody?>? = retrofit.create(LoliconApiNetwork::class.java)[Init.LOLICON_APIKEY, "true"]
+        val call: Call<ResponseBody?>? = retrofit.create(LoliconApiService::class.java)[Init.LOLICON_APIKEY, "true"]
         try {
             val body: String
             val responsebody = call?.execute()?.body()

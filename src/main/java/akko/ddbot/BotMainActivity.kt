@@ -1,8 +1,9 @@
 package akko.ddbot
 
 import akko.ddbot.command.*
+import akko.ddbot.listener.Ascii2dSeachListener
 import akko.ddbot.listener.ImgCollectListener
-import akko.ddbot.listener.ImgSeachListener
+import akko.ddbot.listener.NaoSeachListener
 import akko.ddbot.listener.TranslateListener
 import akko.ddbot.task.LiveRoomTask
 import akko.ddbot.task.LiverInit
@@ -47,7 +48,8 @@ class BotMainActivity {
 
             mainBot.eventManager.registerListeners(
                     TranslateListener(),
-                    ImgSeachListener(),
+                    NaoSeachListener(),
+                    Ascii2dSeachListener(),
                     ImgCollectListener()
             )
             mainBot.commandManager.registerCommands(

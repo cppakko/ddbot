@@ -16,9 +16,9 @@ import retrofit2.Retrofit
 import java.io.IOException
 import java.util.regex.Pattern
 
-class ImgSeachListener : IcqListener() {
+class NaoSeachListener : IcqListener() {
     @EventHandler
-    fun groupTest(event: EventGroupMessage) {
+    fun listner(event: EventGroupMessage) {
         GlobalScope.launch {
             var pattern = Pattern.compile("(CQ:reply)(.+)(NAONAO)")
             val firstMatcher = pattern.matcher(event.message)
@@ -53,9 +53,10 @@ class ImgSeachListener : IcqListener() {
                                         if (result.similarity < 50) {
                                             builder.run {
                                                 newLine()
-                                                add("你这图怎么回事啊")
+                                                add("你这图怎么回事啊").newLine()
                                             }
                                         }
+                                        builder.add("为什么不试试神奇的ASCASC呢")
                                         groupMsg(event.groupId,builder.toString())
                                     }
                                     override fun onFailure(call: retrofit2.Call<ResponseBody?>, t: Throwable) {
