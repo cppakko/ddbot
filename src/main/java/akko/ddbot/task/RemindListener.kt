@@ -14,6 +14,7 @@ import cc.moecraft.icq.sender.returndata.returnpojo.send.RMessageReturnData
 import cn.hutool.http.HttpException
 import java.sql.ResultSet
 import java.sql.SQLException
+import java.util.*
 
 fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
     try {
@@ -24,18 +25,22 @@ fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?
         var count = 0
         mbWithoutImg.run {
             add("$vNAME 开播力~").newLine()
+            add(UUID.randomUUID()).newLine()
             add("---------------").newLine()
             add(title).newLine()
             add(url).newLine()
             add("---------------").newLine()
+            add(UUID.randomUUID())
         }
         mb.run {
             add("$vNAME 开播力~").newLine()
+            add(UUID.randomUUID()).newLine()
             add("---------------").newLine()
             add(ComponentImage(cover))
             add(title).newLine()
             add(url).newLine()
             add("---------------").newLine()
+            add(UUID.randomUUID())
         }
         if (res.row > 0) {
             do {
