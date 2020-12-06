@@ -55,6 +55,8 @@ class NaoSeachListener : IcqListener() {
                                                 newLine()
                                                 add("你这图怎么回事啊").newLine()
                                             }
+                                        }else{
+                                            builder.newLine()
                                         }
                                         builder.add("为什么不试试神奇的ASCASC呢")
                                         groupMsg(event.groupId,builder.toString())

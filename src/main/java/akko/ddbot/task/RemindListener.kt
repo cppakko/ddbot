@@ -30,7 +30,6 @@ fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?
             add(title).newLine()
             add(url).newLine()
             add("---------------").newLine()
-            add(UUID.randomUUID())
         }
         mb.run {
             add("$vNAME 开播力~").newLine()
@@ -40,7 +39,6 @@ fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?
             add(title).newLine()
             add(url).newLine()
             add("---------------").newLine()
-            add(UUID.randomUUID())
         }
         if (res.row > 0) {
             do {

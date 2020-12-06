@@ -11,6 +11,8 @@ import cc.moecraft.icq.event.EventHandler
 import cc.moecraft.icq.event.IcqListener
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.sender.message.MessageBuilder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.regex.Pattern
 
@@ -38,23 +40,27 @@ class TranslateListener : IcqListener() {
                         if (imgM.find())
                         {
                             val data = ocrFun(imgM.group(2).toString()).data!!
-                            val language = data.language
                             val textsList = data.texts!!
                             for (t in textsList) {
-                                val transJS = transApi.getTransResult(t.text!!, "auto", "zh")
-                                val unicode = GlobalObject.objectMapper.readValue(transJS, TranslateData::class.java).transResult!![0].dst
-                                mb.add(unicode)
-                                mb.newLine()
+                                GlobalScope.launch() {
+                                    val transJS = transApi.getTransResult(t.text!!, "auto", "zh")
+                                    val unicode = GlobalObject.objectMapper.readValue(transJS, TranslateData::class.java).transResult!![0].dst
+                                    mb.add(unicode)
+                                    mb.newLine()
+                                    event.respond(mb.toString())
+                                }
                             }
                         }
                         else
                         {
-                            val transJS = transApi.getTransResult(rowMessage, "auto", "zh")
-                            val unicode = GlobalObject.objectMapper.readValue(transJS, TranslateData::class.java).transResult!![0].dst
-                            mb.add(unicode)
-                            mb.newLine()
+                            GlobalScope.launch {
+                                val transJS = transApi.getTransResult(rowMessage, "auto", "zh")
+                                val unicode = GlobalObject.objectMapper.readValue(transJS, TranslateData::class.java).transResult!![0].dst
+                                mb.add(unicode)
+                                mb.newLine()
+                                event.respond(mb.toString())
+                            }
                         }
-                        event.respond(mb.toString())
                     } catch (e: IOException) {
                         BotMainActivity.ExceptionLogger!!.debug(e.message)
                         event.respond(e.message)
