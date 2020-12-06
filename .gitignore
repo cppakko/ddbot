@@ -1,8 +1,7 @@
-
-.project
-target/
-.vscode/
-.idea/
-.settings/
-akko.ddbot.iml
-src/test/
+# Project exclude paths
+/.gradle/
+/build/
+/.idea/
+/test/
+/out/
+/run/
