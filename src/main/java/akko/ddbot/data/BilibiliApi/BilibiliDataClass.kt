@@ -65,7 +65,8 @@ data class Pendant(
         val image: String,
         val image_enhance: String,
         val name: String,
-        val pid: Int
+        val pid: Int,
+        val image_enhance_frame: String
 )
 
 class SysNotice
