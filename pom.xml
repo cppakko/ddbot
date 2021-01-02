@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.github.hydevelop</groupId>
             <artifactId>PicqBotX</artifactId>
-            <version>4.15.0.1058</version>
+            <version>4.15.0.1072</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.hydev/HyLogger -->
