@@ -10,6 +10,7 @@ data class MsgData(
         val group_id: Int,
         val message: String,
         val message_id: Long,
+        val message_type: String,
         val real_id: Int,
         val sender: Sender,
         val time: Long
