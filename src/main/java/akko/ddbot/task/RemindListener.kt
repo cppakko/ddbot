@@ -60,14 +60,7 @@ fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?
         tuple.second.close()
         val groupId = Init.GROUP_ID.toLong()
         var data: ReturnData<RMessageReturnData>? = null
-        try {
-            data = rawGroupMsg(groupId, mb.toString())
-        }catch (e: HttpException)
-        {
-            groupMsg(Init.GROUP_ID.toLong(), MessageBuilder().add("被风控力").newLine().add(ComponentImage("amamiya_err.jpg")).toString())
-            groupMsg(Init.GROUP_ID.toLong(),mbWithoutImg.toString())
-            return
-        }
+        data = rawGroupMsg(groupId, mb.toString())
         var rStatus = data!!.status
         println(rStatus)
         println(data.returnCode)

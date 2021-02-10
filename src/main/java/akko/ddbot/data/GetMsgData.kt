@@ -9,6 +9,7 @@ data class MsgData(
         val group: Boolean,
         val group_id: Int,
         val message: String,
+        val raw_message:String,
         val message_id: Long,
         val message_type: String,
         val real_id: Int,

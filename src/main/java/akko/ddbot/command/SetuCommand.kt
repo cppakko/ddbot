@@ -111,14 +111,7 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
         Thumbnails.of(filePath).size(800,800).toFile(thumbnail_path)
     }
     var returnData: ReturnData<RMessageReturnData>? = null
-    try {
-        returnData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbnail.jpg")).toString())!!
-    }
-    catch (e: HttpException)
-    {
-        groupMsg(Init.GROUP_ID.toLong(), MessageBuilder().add("被风控力").newLine().add(ComponentImage("amamiya_err.jpg")).toString())
-        return
-    }
+    returnData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbnail.jpg")).toString())!!
     val messageId = returnData.data.messageId
     println(returnData.returnCode)
     val status = returnData.status
