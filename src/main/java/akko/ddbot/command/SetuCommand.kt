@@ -4,7 +4,6 @@ import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import akko.ddbot.data.LoliconApi.LoliconApiDataClass
 import akko.ddbot.network.LoliconApiService
-import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
 import akko.ddbot.utilities.groupMsg
 import akko.ddbot.utilities.rawGroupMsg
@@ -18,7 +17,6 @@ import cc.moecraft.icq.sender.returndata.ReturnStatus
 import cc.moecraft.icq.sender.returndata.returnpojo.send.RMessageReturnData
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
-import cn.hutool.http.HttpException
 import net.coobird.thumbnailator.Thumbnails
 import okhttp3.*
 import retrofit2.Call
@@ -112,7 +110,7 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
     }
     var returnData: ReturnData<RMessageReturnData>? = null
     returnData = rawGroupMsg(group_id,MessageBuilder().add(ComponentImage("img_thumbnails/" + fileName + "_thumbnail.jpg")).toString())!!
-    val messageId = returnData.data.messageId
+    //val messageId = returnData.data.messageId
     println(returnData.returnCode)
     val status = returnData.status
     if (status != ReturnStatus.ok)
@@ -125,7 +123,8 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
         {
             rawGroupMsg(group_id,"$author $url")
         }
-        SQLFun().execute("INSERT INTO setulist.list VALUES('$messageId','$filePath','$thumbnail_path',${(Date().time / 1000L)});")
+        //TODO
+        /*SQLFun().execute("INSERT INTO setulist.list VALUES('$messageId','$filePath','$thumbnail_path',${(Date().time / 1000L)});")
         val t = SQLFun().executeQuery("SELECT count(*) from setulist.list;")
         val set = t!!.first
         if (set.getInt(1) > 10)
@@ -133,6 +132,6 @@ private fun onResponse(filePath: String,thumbnail_path: String,group_id: Long,fi
             //TODO SQL D
             SQLFun().execute("DELETE FROM setulist.list WHERE message_id = (SELECT message_id from setulist.list WHERE sendtime = (SELECT MIN(sendtime) from setulist.list));")
         }
-        t.second.close()
+        t.second.close()*/
     }
 }

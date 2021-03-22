@@ -2,7 +2,8 @@ package akko.ddbot.task
 
 import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
-import akko.ddbot.sql.SQLFun
+import akko.ddbot.sql.KtormObject
+import akko.ddbot.sql.connectionPool
 import akko.ddbot.utilities.groupMsg
 import akko.ddbot.utilities.rawGroupMsg
 import cc.moecraft.icq.sender.message.MessageBuilder
@@ -11,15 +12,23 @@ import cc.moecraft.icq.sender.message.components.ComponentImage
 import cc.moecraft.icq.sender.returndata.ReturnData
 import cc.moecraft.icq.sender.returndata.ReturnStatus
 import cc.moecraft.icq.sender.returndata.returnpojo.send.RMessageReturnData
-import cn.hutool.http.HttpException
-import java.sql.ResultSet
+import org.ktorm.database.Database
+import org.ktorm.dsl.eq
+import org.ktorm.dsl.from
+import org.ktorm.dsl.select
+import org.ktorm.dsl.where
 import java.sql.SQLException
 import java.util.*
 
 fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
     try {
-        val tuple = SQLFun().executeQuery("SELECT user_id FROM groupinfo.follow_info WHERE vid = (SELECT id FROM groupinfo.vliver WHERE \"vID\" = '${vID}')")
-        val res: ResultSet = tuple!!.first
+        val connection = Database.connect(connectionPool.connectionPool)
+        val vid = connection.from(KtormObject.VliverInfo).select(KtormObject.VliverInfo.id).where{
+            KtormObject.VliverInfo.pid eq vID
+        }.rowSet.getInt(0)
+        val res = connection.from(KtormObject.FollowTable).select(KtormObject.FollowTable.userId).where {
+            KtormObject.FollowTable.id eq vid
+        }
         val mb = MessageBuilder()
         val mbWithoutImg = MessageBuilder()
         var count = 0
@@ -40,27 +49,25 @@ fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?
             add(url).newLine()
             add("---------------").newLine()
         }
-        if (res.row > 0) {
-            do {
-                mb.run {
-                    add(ComponentAt(res.getString("user_id").toLong()))
-                    add(" ")
-                }
-                mbWithoutImg.run {
-                    add(ComponentAt(res.getString("user_id").toLong()))
-                    add(" ")
-                }
-                count++
-                if (count == 3) {
-                    mb.newLine()
-                    count = 0
-                }
-            } while (res.next())
+        for (row in res)
+        {
+            mb.run {
+                add(ComponentAt(row[KtormObject.FollowTable.userId]!!.toLong()))
+                add(" ")
+            }
+            //TODO plan to del
+            mbWithoutImg.run {
+                add(ComponentAt(row[KtormObject.FollowTable.userId]!!.toLong()))
+                add(" ")
+            }
+            count++
+            if (count == 3) {
+                mb.newLine()
+                count = 0
+            }
         }
-        tuple.second.close()
         val groupId = Init.GROUP_ID.toLong()
-        var data: ReturnData<RMessageReturnData>? = null
-        data = rawGroupMsg(groupId, mb.toString())
+        val data: ReturnData<RMessageReturnData>? = rawGroupMsg(groupId, mb.toString())
         var rStatus = data!!.status
         println(rStatus)
         println(data.returnCode)

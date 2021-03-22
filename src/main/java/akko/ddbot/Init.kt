@@ -1,12 +1,10 @@
 package akko.ddbot
 
 import akko.ddbot.data.BotConfigData
-import akko.ddbot.sql.SQLFun
 import akko.ddbot.utilities.GlobalObject
 import org.hydev.logger.HyLogger
 import java.io.File
 import java.io.IOException
-import java.sql.DriverManager
 import kotlin.system.exitProcess
 
 object Init {
@@ -63,7 +61,7 @@ object Init {
                 POSTGRE_USER = botConfigData.postgreUser
                 POSTGRE_DATABASE = botConfigData.postgreDatabase
 
-                MAX_PICTURE_ID = SQLFun().executeQuery("select max(picture_id) from imgcollect.imginfo;")!!.first.getLong(1)
+                //MAX_PICTURE_ID = SQLFun().executeQuery("select max(picture_id) from imgcollect.imginfo;")!!.first.getLong(1)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

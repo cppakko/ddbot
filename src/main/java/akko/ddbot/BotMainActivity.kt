@@ -6,7 +6,6 @@ import akko.ddbot.listener.ImgCollectListener
 import akko.ddbot.listener.NaoSeachListener
 import akko.ddbot.listener.TranslateListener
 import akko.ddbot.task.LiveRoomTask
-import akko.ddbot.task.LiverInit
 import cc.moecraft.icq.PicqBotX
 import cc.moecraft.icq.PicqConfig
 import cc.moecraft.logger.HyLogger
@@ -17,9 +16,10 @@ import org.hydev.logger.HyLoggerConfig
 class BotMainActivity {
     companion object {
         var bot: PicqBotX? = null
-        var NLogger:HyLogger? = null
-        var SQLLogger:HyLogger? = null
-        var ExceptionLogger:HyLogger? = null
+        var NLogger: HyLogger? = null
+        var SQLLogger: HyLogger? = null
+        var ExceptionLogger: HyLogger? = null
+
         //MAIN
         @JvmStatic
         fun main(args: Array<String>) {
@@ -30,9 +30,9 @@ class BotMainActivity {
             // 日志管理器
             val loggerInstanceManager = LoggerInstanceManager()
             loggerInstanceManager.addEnvironment(FileEnv("logs", "ddbot"))
-            NLogger = loggerInstanceManager.getLoggerInstance("LiveRoomTask",true)
-            SQLLogger = loggerInstanceManager.getLoggerInstance("SQL",true)
-            ExceptionLogger = loggerInstanceManager.getLoggerInstance("Exception",true)
+            NLogger = loggerInstanceManager.getLoggerInstance("LiveRoomTask", true)
+            SQLLogger = loggerInstanceManager.getLoggerInstance("SQL", true)
+            ExceptionLogger = loggerInstanceManager.getLoggerInstance("Exception", true)
             //INIT END
             val mainConfig = PicqConfig(Init.SOCKET_PORT).run {
                 isDebug = true
@@ -47,24 +47,25 @@ class BotMainActivity {
             mainBot.enableCommandManager("!", "bot -")
 
             mainBot.eventManager.registerListeners(
-                    TranslateListener(),
-                    NaoSeachListener(),
-                    Ascii2dSeachListener(),
-                    ImgCollectListener()
+                TranslateListener(),
+                NaoSeachListener(),
+                Ascii2dSeachListener(),
+                ImgCollectListener()
             )
             mainBot.commandManager.registerCommands(
-                    AddListener(),
-                    AddLiver(),
-                    DiceMan(),
-                    HelpCommand(),
-                    RemoveListener(),
-                    SetuCommand(),
-                    vLiverFinder(),
-                    TestCommand(),
-                    LogInCommand()
+                AddListener(),
+                AddLiver(),
+                DiceMan(),
+                HelpCommand(),
+                RemoveListener(),
+                SetuCommand(),
+                vLiverFinder(),
+                TestCommand(),
+                WxImgCommand()
             )
             bot = mainBot
-            LiverInit.init()
+            akko.ddbot.sql.connectionPool.poolInit()
+            Init.installCheck()
             mainBot.startBot()
             LiveRoomTask.run()
         }

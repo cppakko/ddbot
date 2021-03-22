@@ -1,12 +1,15 @@
 package akko.ddbot.command
 
-import akko.ddbot.sql.SQLFun
-import akko.ddbot.task.LiverInit
+import akko.ddbot.sql.KtormObject
+import akko.ddbot.sql.connectionPool
+import akko.ddbot.task.LoadLiver
 import cc.moecraft.icq.command.CommandProperties
 import cc.moecraft.icq.command.interfaces.GroupCommand
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
+import org.ktorm.database.Database
+import org.ktorm.dsl.insert
 import java.util.*
 
 class AddLiver : GroupCommand {
@@ -18,15 +21,17 @@ class AddLiver : GroupCommand {
                               arg4: ArrayList<String>): String {
         val arr = arg0.getMessage().split(" ".toRegex()).toTypedArray()
         if (arr.size == 3) {
-            SQLFun().run {
-                //arr[1] bilibiliuid       arr[2] 主播昵称
-                execute("INSERT INTO groupinfo.vliver (\"vID\",\"vNAME\",\"vSTATE\") values ('${arr[1]}','${arr[2]}',0);")
-                execute("INSERT INTO groupinfo.follow_info VALUES(${arg1.id},(SELECT \"id\" FROM groupinfo.vliver WHERE vliver.\"vID\" = '${arr[1]}'));")
+            val connection = Database.connect(connectionPool.connectionPool)
+            connection.insert(KtormObject.VliverInfo)
+            {
+                set(KtormObject.VliverInfo.pid,arr[1])
+                set(KtormObject.VliverInfo.name,arr[2])
+                set(KtormObject.VliverInfo.liveState,0)
             }
-            LiverInit.init()
+            LoadLiver.reLoad()
         } else {
             return "输入有误"
         }
-        return "✔"
+        return "ok~"
     }
 }

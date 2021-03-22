@@ -4,19 +4,19 @@ import akko.ddbot.BotMainActivity
 import akko.ddbot.Init
 import akko.ddbot.data.BilibiliApi.BilibiliDataClass
 import akko.ddbot.network.BilibiliApiService
-import akko.ddbot.sql.SQLFun
-import akko.ddbot.utilities.GlobalObject
+import akko.ddbot.sql.KtormObject
+import akko.ddbot.sql.connectionPool
 import akko.ddbot.utilities.groupMsg
-import com.fasterxml.jackson.module.kotlin.*
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.ResponseBody
-import org.hydev.logger.foreground
+import org.ktorm.database.Database
+import org.ktorm.dsl.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import java.awt.Color
 import java.io.IOException
-import java.sql.Connection
 import java.sql.SQLException
 
 val LiveRoomTask = Thread {
@@ -24,30 +24,38 @@ val LiveRoomTask = Thread {
     val retrofit = Retrofit.Builder().baseUrl("https://api.bilibili.com/x/space/acc/").build()
     try {
         while (true) {
-            LiverInit()
-            val liverList: List<String>? = LiverInit.liverList
-            for (vID in liverList!!) {
+            LoadLiver.reLoad()
+            val liverList: List<String> = LoadLiver.liverList
+            for (vID in liverList) {
                 val call = retrofit.create(BilibiliApiService::class.java).getDatCall(vID)
                 call!!.enqueue(object: Callback<ResponseBody?>{
                     override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                         if (response.body() != null) {
-                            val sqliteC: Connection = SQLFun().connection()!!
+                            val database = Database.connect(connectionPool.connectionPool)
                             val body = response.body()!!.string()
                             val data = oMapper.readValue<BilibiliDataClass>(body).data
                             val liveRoomData = data.live_room
                             val statusRightNow = liveRoomData.liveStatus
                             BotMainActivity.NLogger!!.log("$vID 检查完成")
-                            println(vID)
-                            val resultSet= sqliteC.prepareStatement("select \"vSTATE\" from  groupinfo.vliver WHERE \"vID\" = '$vID';").executeQuery()
-                            resultSet.next()
-                            val statusindb = resultSet.getInt(1)
+                            var statusindb = 0
+                            for (row in database.from(KtormObject.VliverInfo).select(KtormObject.VliverInfo.liveState).where {KtormObject.VliverInfo.pid like vID})
+                            {
+                                statusindb = row[KtormObject.VliverInfo.liveState]!!
+                            }
                             if (statusRightNow == 1 && statusindb == 0) {
-                                sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 1 WHERE \"vID\" = '$vID';").execute()
+                                database.update(KtormObject.VliverInfo)
+                                {
+                                    set(it.liveState,1)
+                                    where { it.pid like vID }
+                                }
                                 remindListenerFun(liveRoomData.cover, vID, data.name, liveRoomData.title, liveRoomData.url)
                             } else if (statusRightNow == 0 && statusindb == 1) {
-                                sqliteC.prepareStatement("UPDATE groupinfo.vliver SET \"vSTATE\" = 0 WHERE \"vID\" = '$vID';").execute()
+                                database.update(KtormObject.VliverInfo)
+                                {
+                                    set(it.liveState,0)
+                                    where { it.pid like vID }
+                                }
                             }
-                            sqliteC.close()
                         } else {
                             groupMsg(Init.GROUP_ID.toLong(), "b站网络出问题了(确信")
                         }

@@ -1,21 +1,8 @@
 package akko.ddbot.listener
 
-import akko.ddbot.BotMainActivity
-import akko.ddbot.Init
-import akko.ddbot.sql.SQLFun
-import akko.ddbot.utilities.PatternHelper
-import akko.ddbot.utilities.getImg
-import akko.ddbot.utilities.getMsg
 import cc.moecraft.icq.event.EventHandler
 import cc.moecraft.icq.event.IcqListener
 import cc.moecraft.icq.event.events.message.EventGroupMessage
-import cc.moecraft.utils.FileUtils
-import net.coobird.thumbnailator.Thumbnails
-import org.sqlite.SQLiteException
-import java.io.File
-import java.sql.DriverManager
-import java.sql.SQLException
-import java.util.*
 import java.util.regex.Pattern
 
 class ImgCollectListener : IcqListener() {
@@ -24,7 +11,8 @@ class ImgCollectListener : IcqListener() {
         val pattern = Pattern.compile("(\\[CQ:reply,id=([-0-9]*))*([ a-zA-Z0-9,=:\\[\\]])*(这个好)")
         val matcher = pattern.matcher(event.message)
         if (matcher.find() && matcher.group(4) == "这个好") {
-            val data = getMsg(matcher.group(2))
+            event.respond("不想整理屎山(真 所以暂时关闭了呢(")
+            /*val data = getMsg(matcher.group(2))
             val bot_id: Long = 395837251
             //判断是否为机器人发送的图片
             if (data.sender.user_id != bot_id) {
@@ -113,7 +101,7 @@ class ImgCollectListener : IcqListener() {
                     }
                     event.respond("添加成功 yattaze")
                 }
-            }
+            }*/
         }
     }
 }

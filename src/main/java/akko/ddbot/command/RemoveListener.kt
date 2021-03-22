@@ -1,11 +1,15 @@
 package akko.ddbot.command
 
-import akko.ddbot.sql.SQLFun
+import akko.ddbot.sql.KtormObject
+import akko.ddbot.sql.connectionPool
 import cc.moecraft.icq.command.CommandProperties
 import cc.moecraft.icq.command.interfaces.GroupCommand
 import cc.moecraft.icq.event.events.message.EventGroupMessage
 import cc.moecraft.icq.user.Group
 import cc.moecraft.icq.user.GroupUser
+import org.ktorm.database.Database
+import org.ktorm.dsl.delete
+import org.ktorm.dsl.eq
 import java.util.*
 
 class RemoveListener : GroupCommand {
@@ -17,9 +21,13 @@ class RemoveListener : GroupCommand {
                               arg4: ArrayList<String>): String {
         val arr = arg0.getMessage().split(" ".toRegex()).toTypedArray()
         return if (arr.size == 2) {
-            //TODO SQL操作检测
             //arr[1] 主播pid            arg1.id 发送者QQ号
-            SQLFun().execute("DELETE FROM groupinfo.follow_info WHERE user_id = ${arg1.id} AND vid = (SELECT id FROM groupinfo.vliver WHERE \"vID\" = '${arr[1]}');")
+            val connection = Database.connect(connectionPool.connectionPool)
+            connection.delete(KtormObject.FollowTable)
+            {
+                //TODO toLong
+                it.userId eq arg1.id.toInt()
+            }
             "操作成功 yattaze"
         } else {
             "ERR 输入有误"
