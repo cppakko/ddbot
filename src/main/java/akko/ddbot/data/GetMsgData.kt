@@ -11,6 +11,7 @@ data class MsgData(
         val message: String,
         val raw_message:String,
         val message_id: Long,
+        val message_seq: Int,
         val message_type: String,
         val real_id: Int,
         val sender: Sender,
