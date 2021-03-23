@@ -23,9 +23,12 @@ import java.util.*
 fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?, url: String?) {
     try {
         val connection = Database.connect(connectionPool.connectionPool)
-        val vid = connection.from(KtormObject.VliverInfo).select(KtormObject.VliverInfo.id).where{
+        var vid = -1;
+        for (row in connection.from(KtormObject.VliverInfo).select(KtormObject.VliverInfo.id).where {
             KtormObject.VliverInfo.pid eq vID
-        }.rowSet.getInt(0)
+        }) {
+            vid = row[KtormObject.VliverInfo.id]!!
+        }
         val res = connection.from(KtormObject.FollowTable).select(KtormObject.FollowTable.userId).where {
             KtormObject.FollowTable.id eq vid
         }
@@ -49,8 +52,7 @@ fun remindListenerFun(cover: String?, vID: String, vNAME: String, title: String?
             add(url).newLine()
             add("---------------").newLine()
         }
-        for (row in res)
-        {
+        for (row in res) {
             mb.run {
                 add(ComponentAt(row[KtormObject.FollowTable.userId]!!.toLong()))
                 add(" ")
