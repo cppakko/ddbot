@@ -79,11 +79,19 @@ data class Vip(
         val nickname_color: String,
         val status: Int,
         val theme_type: Int,
-        val type: Int
+        val type: Int,
+        val due_date: Long,
+        val vip_pay_type: Int,
+        val role: Int,
+        val avatar_subscript_url: String
 )
 
 data class Label(
         val label_theme: String,
         val path: String,
-        val text: String
+        val text: String,
+        val text_color: String,
+        val bg_style: Int,
+        val bg_color: String,
+        val border_color: String
 )
